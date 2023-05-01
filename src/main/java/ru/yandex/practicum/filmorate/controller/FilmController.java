@@ -3,13 +3,12 @@ package ru.yandex.practicum.filmorate.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
+
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.util.Validator;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
 import java.util.*;
 
 @RestController
@@ -42,7 +41,6 @@ public class FilmController {
         log.info("Получен запрос PUT /films - обновление фильма");
         return film;
     }
-
     private int getId() {
         return ++id;
     }
