@@ -11,7 +11,7 @@ public class Film {
     private int id;
     @NotBlank
     private final String name;
-    @Size(max=200, message = "максимальная длина описания — 200 символов")
+    @Size(max = 200, message = "максимальная длина описания — 200 символов")
     private final String description;
     private final LocalDate releaseDate;
     private final int duration;
