@@ -25,7 +25,7 @@ public class UserController {
     public Collection<User> findAllUsers() {
         return users.values();
     }
-    
+
     @PostMapping
     public User createUser(@Valid @RequestBody User user) {
         log.info("Получен запрос POST /users - добавление пользователя");
@@ -35,7 +35,7 @@ public class UserController {
         log.info("Пользователь добавлен");
         return user;
     }
-    
+
     @PutMapping
     public User updateUser(@Valid @RequestBody User user) {
         log.info("Получен запрос PUT /users - обновление пользователя");
@@ -48,7 +48,7 @@ public class UserController {
         log.info("Пользователь обновлен");
         return user;
     }
-    
+
     private int getId() {
         return ++id;
     }
