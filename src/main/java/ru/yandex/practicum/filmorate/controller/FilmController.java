@@ -32,6 +32,7 @@ public class FilmController {
         films.put(film.getId(), film);
         return film;
     }
+
     @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) {
         if(!films.containsKey(film.getId())) {
@@ -42,6 +43,7 @@ public class FilmController {
         log.info("Получен запрос PUT /films - обновление фильма");
         return film;
     }
+
     private int getId() {
         return ++id;
     }
