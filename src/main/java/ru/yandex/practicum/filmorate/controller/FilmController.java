@@ -23,7 +23,7 @@ public class FilmController {
     public Collection<Film> findAllFilms() {
         return films.values();
     }
-    
+
     @PostMapping
     public Film createFilm(@Valid @RequestBody Film film) {
         Validator.validateFilm(film);
