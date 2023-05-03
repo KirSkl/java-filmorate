@@ -62,6 +62,7 @@ class ValidatorTest {
                 () -> Validator.validateUser(userIncorrectLogin));
         assertEquals("Логин не должен содержать пробелов", thrown.getMessage());
     }
+
     @Test
     void shouldNotReturnExceptionWhenValidatesCorrectFilm() {
         Film filmCorrect = new Film("Нормальный фильм",
@@ -71,18 +72,20 @@ class ValidatorTest {
 
         assertDoesNotThrow(() -> Validator.validateFilm(filmCorrect));
     }
+
     @Test
     void shouldNotReturnExceptionWhenValidatesCorrectUser() {
-        User userCorrect = new User ("quentin@genius.com",
+        User userCorrect = new User("quentin@genius.com",
                 "FemaleFeet",
                 "Tarantino",
                 LocalDate.of(1963, 03, 27));
 
         assertDoesNotThrow(() -> Validator.validateUser(userCorrect));
     }
+
     @Test
     void shouldDoesNameAsLogin() {
-        User userNullName = new User ("quentin@genius.com",
+        User userNullName = new User("quentin@genius.com",
                 "FemaleFeet",
                 null,
                 LocalDate.of(1963, 03, 27));
