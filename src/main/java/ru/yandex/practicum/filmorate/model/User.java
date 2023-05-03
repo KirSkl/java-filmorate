@@ -30,15 +30,16 @@ public class User {
         this.id = id;
         this.email = email;
         this.login = login;
-        this.name = (name == null || name.isBlank())? login : name;
+        this.name = (name == null || name.isBlank()) ? login : name;
         this.birthday = birthday;
     }
+
     @JsonCreator
     public User(@JsonProperty String email, @JsonProperty String login, @JsonProperty String name,
             @JsonProperty LocalDate birthday) {
         this.email = email;
         this.login = login;
-        this.name = (name == null || name.isBlank())? login : name;
+        this.name = (name == null || name.isBlank()) ? login : name;
         this.birthday = birthday;
     }
 }
