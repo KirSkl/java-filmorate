@@ -25,6 +25,15 @@ public class User {
     private LocalDate birthday;
 
     @JsonCreator
+    public User(@JsonProperty int id, @JsonProperty String email, @JsonProperty String login, @JsonProperty String name,
+            @JsonProperty LocalDate birthday) {
+        this.id = id;
+        this.email = email;
+        this.login = login;
+        this.name = (name == null || name.isBlank())? login : name;
+        this.birthday = birthday;
+    }
+    @JsonCreator
     public User(@JsonProperty String email, @JsonProperty String login, @JsonProperty String name,
             @JsonProperty LocalDate birthday) {
         this.email = email;
