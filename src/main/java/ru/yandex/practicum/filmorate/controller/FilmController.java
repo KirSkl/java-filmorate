@@ -23,6 +23,7 @@ public class FilmController {
     public Collection<Film> findAllFilms() {
         return films.values();
     }
+
     @PostMapping
     public Film createFilm(@Valid @RequestBody Film film) {
         Validator.validateFilm(film);
@@ -31,9 +32,10 @@ public class FilmController {
         films.put(film.getId(), film);
         return film;
     }
+
     @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) {
-        if(!films.containsKey(film.getId())) {
+        if (!films.containsKey(film.getId())) {
             throw new FilmNotFoundException("Фильм с таким ID не найден");
         }
         Validator.validateFilm(film);
@@ -41,6 +43,7 @@ public class FilmController {
         log.info("Получен запрос PUT /films - обновление фильма");
         return film;
     }
+
     private int getId() {
         return ++id;
     }

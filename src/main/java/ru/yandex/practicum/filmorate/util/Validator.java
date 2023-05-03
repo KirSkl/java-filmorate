@@ -13,7 +13,7 @@ public class Validator {
     private static final Logger log = LoggerFactory.getLogger(Validator.class);
 
     public static void validateFilm(Film film) {
-        if (film.getDuration() <=0) {
+        if (film.getDuration() <= 0) {
             log.info("Ошибочный запрос - указана не положительная продолжительность");
             throw new ValidationException("Продолжительность должна быть положительной");
         }
@@ -22,6 +22,7 @@ public class Validator {
             throw new ValidationException("Дата релиза должна быть не раньше 28 декабря 1895 года");
         }
     }
+
     public static void validateUser(User user) {
         if (user.getLogin().contains(" ")) {
             log.info("Ошибочный запрос - логин содержит пробелы");

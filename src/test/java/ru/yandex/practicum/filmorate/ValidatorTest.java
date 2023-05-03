@@ -24,6 +24,7 @@ class ValidatorTest {
                 () -> Validator.validateFilm(filmZeroDuration));
         assertEquals("Продолжительность должна быть положительной", thrown.getMessage());
     }
+
     @Test
     void shouldReturnValidationExceptionCauseDurationIsNegative() {
         Film filmNegativeDuration = new Film("Негатив",
@@ -36,6 +37,7 @@ class ValidatorTest {
                 () -> Validator.validateFilm(filmNegativeDuration));
         assertEquals("Продолжительность должна быть положительной", thrown.getMessage());
     }
+
     @Test
     void shouldReturnValidationExceptionCauseReleaseDateIsTooEarly() {
         Film filmTooEarly = new Film("Ранняя пташка",
@@ -48,9 +50,10 @@ class ValidatorTest {
                 () -> Validator.validateFilm(filmTooEarly));
         assertEquals("Дата релиза должна быть не раньше 28 декабря 1895 года", thrown.getMessage());
     }
+
     @Test
     void shouldReturnValidationExceptionCauseLoginContainsSpaces() {
-        User userIncorrectLogin = new User ("quentin@genius.com",
+        User userIncorrectLogin = new User("quentin@genius.com",
                 "Female Feet",
                 "Tarantino",
                 LocalDate.of(1963, 03, 27));
