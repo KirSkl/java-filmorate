@@ -29,11 +29,7 @@ public class User {
             @JsonProperty LocalDate birthday) {
         this.email = email;
         this.login = login;
-        if (name == null || name.isBlank()) {
-            this.name = login;
-        } else {
-            this.name = name;
-        }
+        this.name = (name == null || name.isBlank())? login : name;
         this.birthday = birthday;
     }
 }
