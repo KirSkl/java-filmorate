@@ -9,8 +9,7 @@ import ru.yandex.practicum.filmorate.util.Validator;
 
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class ValidatorTest {
 
@@ -59,5 +58,33 @@ class ValidatorTest {
         ValidationException thrown = assertThrows(ValidationException.class,
                 () -> Validator.validateUser(userIncorrectLogin));
         assertEquals("Логин не должен содержать пробелов", thrown.getMessage());
+    }
+    @Test
+    void shouldNotReturnExceptionWhenValidatesCorrectFilm() {
+        Film filmCorrect = new Film("Нормальный фильм",
+                "Можно скоротать вечерок",
+                LocalDate.of(1984, 01, 01),
+                100);
+
+        assertDoesNotThrow(() -> Validator.validateFilm(filmCorrect));
+    }
+    @Test
+    void shouldNotReturnExceptionWhenValidatesCorrectUser() {
+        User userCorrect = new User ("quentin@genius.com",
+                "FemaleFeet",
+                "Tarantino",
+                LocalDate.of(1963, 03, 27));
+
+        assertDoesNotThrow(() -> Validator.validateUser(userCorrect));
+    }
+    @Test
+    void shouldDoesNameAsLogin() {
+        User userNullName = new User ("quentin@genius.com",
+                "FemaleFeet",
+                null,
+                LocalDate.of(1963, 03, 27));
+
+        assertEquals("FemaleFeet", userNullName.getName());
+        assertDoesNotThrow(() -> Validator.validateUser(userNullName));
     }
 }
