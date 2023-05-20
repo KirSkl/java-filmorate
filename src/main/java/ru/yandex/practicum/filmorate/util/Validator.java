@@ -29,4 +29,11 @@ public class Validator {
             throw new ValidationException("Логин не должен содержать пробелов");
         }
     }
+
+    public static void validateID(Long id) {
+        if (id<1) {
+            log.info("Ошибочный запрос - такой ID не может существовать");
+            throw new ValidationException("ID меньше 1");
+        }
+    }
 }
