@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @ToString
 @EqualsAndHashCode
 public class User {
-    private int id;
+    private Long id;
     @NotBlank(message = "Поле с e-mail не должно быть пустым")
     @Email(message = "Некорректный формат e-mail")
     private String email;
@@ -25,7 +25,7 @@ public class User {
     private LocalDate birthday;
 
     @JsonCreator
-    public User(@JsonProperty int id, @JsonProperty String email, @JsonProperty String login, @JsonProperty String name,
+    public User(@JsonProperty Long id, @JsonProperty String email, @JsonProperty String login, @JsonProperty String name,
             @JsonProperty LocalDate birthday) {
         this.id = id;
         this.email = email;

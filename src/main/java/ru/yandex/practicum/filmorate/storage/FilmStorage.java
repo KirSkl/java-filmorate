@@ -4,7 +4,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 
 public interface FilmStorage {
     Film addFilm(Film film);
-    void removeFilm(int id);
+    void removeFilm(Long id);
     Film updateFilm(Film film);
 
 }
