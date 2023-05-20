@@ -1,7 +1,47 @@
 package ru.yandex.practicum.filmorate.storage;
 
+import lombok.Data;
+import lombok.Getter;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
+import ru.yandex.practicum.filmorate.model.Film;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
-public class InMemoryFilmStorage {
+@Data
+public class InMemoryFilmStorage implements FilmStorage {
+
+    private Long id = 0L;
+    @Getter
+    private Map<Long, Film> films = new HashMap<>();
+
+    @Override
+    public Film addFilm(Film film) {
+        film.setId(getId());
+        films.put(film.getId(), film);
+        return film;
+    }
+
+    @Override
+    public Film updateFilm(Film film) {
+        if (!films.containsKey(film.getId())) {
+            throw new FilmNotFoundException("Фильм с таким ID не найден");
+        }
+        films.put(film.getId(), film);
+        return film;
+    }
+
+    @Override
+    public void removeFilm(Long id) {
+        if (!films.containsKey(id)) {
+            throw new FilmNotFoundException("Фильм с таким ID не найден");
+        }
+        films.remove(id);
+    }
+
+    private Long getId() {
+        return ++id;
+    }
 }
