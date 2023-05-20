@@ -13,6 +13,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.util.Validator;
 
 import javax.validation.Valid;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,6 +24,11 @@ public class InMemoryUserStorage implements UserStorage {
     private final Map<Long, User> users = new HashMap<>();
     private long id = 0L;
     private static final Logger log = LoggerFactory.getLogger(FilmController.class);
+
+    @Override
+    public Collection<User> findAllUsers() {
+        return users.values();
+    }
     @Override
     public User addUser(User user) {
         user.setId(getId());
@@ -41,11 +47,16 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public void removeUser(long id) {
+    public void removeUser(Long id) {
         if (!users.containsKey(id)) {
             throw new UserNotFoundException("Пользователь с таким ID не найден");
         }
         users.remove(id);
+    }
+
+    @Override
+    public User getUserById(Long id) {
+        return users.get(id);
     }
 
     private long getId() {

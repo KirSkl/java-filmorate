@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
 import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 import ru.yandex.practicum.filmorate.util.Validator;
 
@@ -18,24 +19,25 @@ import java.util.Map;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    InMemoryUserStorage userStorage;
+
+    private UserService userService;
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
-    public UserController(InMemoryUserStorage userStorage) {
-        this.userStorage = userStorage;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping
     public Collection<User> findAllUsers() {
-        return userStorage.getUsers().values();
+        return userService.findAllUsers();
     }
 
     @PostMapping
     public User createUser(@Valid @RequestBody User user) {
         log.info("Получен запрос POST /users - добавление пользователя");
         Validator.validateUser(user);
-        userStorage.addUser(user);
+        userService.createUser(user);
         log.info("Пользователь добавлен");
         return user;
     }
@@ -44,7 +46,7 @@ public class UserController {
     public User updateUser(@Valid @RequestBody User user) {
         log.info("Получен запрос PUT /users - обновление пользователя");
         Validator.validateUser(user);
-        userStorage.updateUser(user);
+        userService.updateUser(user);
         log.info("Пользователь обновлен");
         return user;
     }
@@ -52,9 +54,7 @@ public class UserController {
     @DeleteMapping
     public void removeUser(@RequestBody Long id) {
         log.info("Получен запрос DELETE /users - удаление пользователя");
-        userStorage.removeUser(id);
+        userService.removeUser(id);
         log.info("Пользователь удален");
     }
-
-
 }
