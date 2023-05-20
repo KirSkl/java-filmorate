@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 import ru.yandex.practicum.filmorate.util.Validator;
@@ -17,35 +18,37 @@ import java.util.*;
 @RestController
 @RequestMapping("/films")
 public class FilmController {
-    static InMemoryFilmStorage filmStorage;
+
+    FilmService filmService;
     private static final Logger log = LoggerFactory.getLogger(FilmController.class);
     @Autowired
-    public FilmController(InMemoryFilmStorage filmStorage) {
-        this.filmStorage = filmStorage;
+    public FilmController(FilmService filmService) {
+        this.filmService = filmService;
     }
+
     @GetMapping
     public Collection<Film> findAllFilms() {
-        return filmStorage.getFilms().values();
+        return filmService.findAllFilms();
     }
 
     @PostMapping
     public Film createFilm(@Valid @RequestBody Film film) {
         log.info("Получен запрос POST /films - добавление фильма");
         Validator.validateFilm(film);
-        return filmStorage.addFilm(film);
+        return filmService.addFilm(film);
     }
 
     @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) {
         log.info("Получен запрос PUT /films - обновление фильма");
         Validator.validateFilm(film);
-        return filmStorage.updateFilm(film);
+        return filmService.updateFilm(film);
     }
 
     @DeleteMapping
     public void removeFilm(@RequestBody Long id) {
         log.info("Получен запрос DELETE /films - удаление фильма");
-        filmStorage.removeFilm(id);
+        filmService.removeFilm(id);
         log.info("Фильм удален");
     }
 }
