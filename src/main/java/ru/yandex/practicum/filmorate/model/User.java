@@ -8,6 +8,8 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Past;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -23,6 +25,7 @@ public class User {
     private String name;
     @Past(message = "Дата рождения должна быть в прошлом")
     private LocalDate birthday;
+    private Set<Long> friends;
 
     @JsonCreator
     public User(@JsonProperty Long id, @JsonProperty String email, @JsonProperty String login, @JsonProperty String name,
@@ -32,6 +35,7 @@ public class User {
         this.login = login;
         this.name = (name == null || name.isBlank()) ? login : name;
         this.birthday = birthday;
+        this.friends = new HashSet<>();
     }
 
     @JsonCreator
