@@ -50,6 +50,10 @@ public class UserController {
         log.info("Пользователь обновлен");
         return user;
     }
+    @PutMapping("{id}/friends/{friendId}")
+    public void addToFriends(@PathVariable Long id, @PathVariable Long friendsId) {
+
+    }
 
     @DeleteMapping
     public void removeUser(@RequestBody Long id) {

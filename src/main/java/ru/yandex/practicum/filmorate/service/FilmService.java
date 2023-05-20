@@ -30,6 +30,10 @@ public class FilmService {
         return filmStorage.findAllFilms();
     }
 
+    public Film getFilmById(Long id) {
+        return filmStorage.getFilmById(id);
+    }
+
     public Film addFilm(Film film) {
         return filmStorage.addFilm(film);
     }
@@ -56,9 +60,9 @@ public class FilmService {
         filmStorage.getFilmById(idFilm).getLikes().remove(idUser);
     }
 
-    public List<Film> get10MostPopularFilms() {
+    public List<Film> getMostPopularFilms(int count) {
         return filmStorage.findAllFilms().stream()
-                .sorted(Comparator.comparingInt(o -> o.getLikes().size())).limit(10L)
+                .sorted(Comparator.comparingInt(o -> o.getLikes().size())).limit(count)
                 .collect(Collectors.toList());
     }
 }

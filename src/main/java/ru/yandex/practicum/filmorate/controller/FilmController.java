@@ -31,6 +31,17 @@ public class FilmController {
         return filmService.findAllFilms();
     }
 
+    @GetMapping("/{id}")
+    public Film getFilmById(@PathVariable Long id) {
+        Validator.validateID(id);
+        return filmService.getFilmById(id);
+    }
+
+    @GetMapping("/popular")
+    public List<Film> getMostPopularFilms(@RequestParam(defaultValue = "10") int count) {
+        return filmService.getMostPopularFilms(count);
+    }
+
     @PostMapping
     public Film createFilm(@Valid @RequestBody Film film) {
         log.info("Получен запрос POST /films - добавление фильма");
@@ -45,10 +56,27 @@ public class FilmController {
         return filmService.updateFilm(film);
     }
 
+    @PutMapping("/{id}/like/{userId}")
+    public void addLike(@PathVariable Long id, @PathVariable Long userId) {
+        Validator.validateID(id);
+        Validator.validateID(userId);
+        filmService.addLike(id, userId);
+    }
+
+
     @DeleteMapping
     public void removeFilm(@RequestBody Long id) {
         log.info("Получен запрос DELETE /films - удаление фильма");
         filmService.removeFilm(id);
         log.info("Фильм удален");
     }
+
+    @DeleteMapping("/{id}/like/{userId}")
+    public void removeLike(@PathVariable Long id, @PathVariable Long userId) {
+        Validator.validateID(id);
+        Validator.validateID(userId);
+        filmService.deleteLike(id, userId);
+    }
+
+
 }
