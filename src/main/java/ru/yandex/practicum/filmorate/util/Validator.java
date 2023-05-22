@@ -33,7 +33,7 @@ public class Validator {
     }
 
     public static void validateID(Long id) {
-        if (id<1) {
+        if (id < 1) {
             log.info("Ошибочный запрос - такой ID не может существовать");
             throw new ValidationIDException("ID меньше 1");
         }
