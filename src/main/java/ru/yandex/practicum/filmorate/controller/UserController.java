@@ -27,23 +27,27 @@ public class UserController {
 
     @GetMapping
     public Collection<User> findAllUsers() {
+        log.info("Получен запрос GET /users - получить список пользователей");
         return userService.findAllUsers();
     }
 
     @GetMapping("/{id}")
     public User getUserById(@PathVariable Long id) {
+        log.info("Получен запрос POST /users/{id} - найти пользователя по ID");
         Validator.validateID(id);
         return userService.getUserById(id);
     }
 
     @GetMapping("/{id}/friends")
     public List<User> getFriendsOfUser(@PathVariable Long id) {
+        log.info("Получен запрос POST /users/{id}/friends - получить список друзей пользователя");
         Validator.validateID(id);
         return userService.getFriendsOfUser(id);
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
     public Collection<User> getCommonFriends(@PathVariable Long id, @PathVariable Long otherId) {
+        log.info("Получен запрос POST /users/{id}/friends/common/{otherId} - получить список общих друзей пользователей");
         Validator.validateID(id);
         Validator.validateID(otherId);
         return userService.showCommonFriends(id, otherId);
@@ -69,9 +73,11 @@ public class UserController {
 
     @PutMapping("{id}/friends/{friendId}")
     public void addToFriends(@PathVariable Long id, @PathVariable Long friendId) {
+        log.info("Получен запрос PUT /users{id}/friends/{friendId} - добавить пользователя в друзья");
         Validator.validateID(id);
         Validator.validateID(friendId);
         userService.addToFriends(id, friendId);
+        log.info("Пользователь добавлен в друзья");
     }
 
     @DeleteMapping
@@ -83,8 +89,10 @@ public class UserController {
 
     @DeleteMapping("/{id}/friends/{friendId}")
     public void removeFromFriends(@PathVariable Long id, @PathVariable Long friendId) {
+        log.info("Получен запрос DELETE /users/{id}/friends/{friendId} - удаление пользователя из друзей");
         Validator.validateID(id);
         Validator.validateID(friendId);
         userService.removeFromFriends(id, friendId);
+        log.info("Пользователь удален из друзей");
     }
 }
