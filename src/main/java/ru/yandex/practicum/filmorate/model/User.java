@@ -38,9 +38,9 @@ public class User {
         this.friends = new HashSet<>();
     }
 
-    @JsonCreator
-    public User(@JsonProperty String email, @JsonProperty String login, @JsonProperty String name,
-            @JsonProperty LocalDate birthday) {
+
+    public User( String email,  String login,  String name,
+             LocalDate birthday) {
         this.email = email;
         this.login = login;
         this.name = (name == null || name.isBlank()) ? login : name;

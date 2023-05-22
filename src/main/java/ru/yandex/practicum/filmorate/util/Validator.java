@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.exception.ValidationIDException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 
@@ -33,7 +34,7 @@ public class Validator {
     public static void validateID(Long id) {
         if (id<1) {
             log.info("Ошибочный запрос - такой ID не может существовать");
-            throw new ValidationException("ID меньше 1");
+            throw new ValidationIDException("ID меньше 1");
         }
     }
 }

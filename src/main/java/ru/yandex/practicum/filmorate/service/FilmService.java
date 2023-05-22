@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.service;
 
+import org.apache.logging.log4j.util.PropertySource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
@@ -14,6 +15,8 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.util.Comparator.comparingInt;
 
 @Service
 public class FilmService {
@@ -47,7 +50,7 @@ public class FilmService {
     }
 
     public void addLike(Long idFilm, Long idUser) {
-        filmStorage.getFilmById(idFilm).getLikes().add(idUser);
+        filmStorage.getFilmById(idFilm).addLike(idUser);
     }
 
     public void deleteLike(Long idFilm, Long idUser) {
@@ -57,12 +60,12 @@ public class FilmService {
         if (!userStorage.getUsers().containsKey(idUser)) {
             throw new UserNotFoundException("Пользователь с таким ID не найден");
         }*/
-        filmStorage.getFilmById(idFilm).getLikes().remove(idUser);
+        filmStorage.getFilmById(idFilm).deleteLike(idUser);
     }
 
     public List<Film> getMostPopularFilms(int count) {
         return filmStorage.findAllFilms().stream()
-                .sorted(Comparator.comparingInt(o -> o.getLikes().size())).limit(count)
+                .sorted(Comparator.comparingInt(o -> -o.getRate())).limit(count)
                 .collect(Collectors.toList());
     }
 }

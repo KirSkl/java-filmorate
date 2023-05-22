@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.Getter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -20,16 +21,18 @@ public class Film {
     private final LocalDate releaseDate;
     private final int duration;
     private Set<Long> likes;
+    private int rate=0;
 
-    @JsonCreator
-    public Film(@JsonProperty Long id, @JsonProperty String name, @JsonProperty String description,
-            @JsonProperty LocalDate releaseDate, @JsonProperty int duration) {
+
+    public Film( Long id, String name,  String description,
+            LocalDate releaseDate,  int duration, int rate) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.releaseDate = releaseDate;
         this.duration = duration;
         this.likes = new HashSet<>();
+        this.rate = rate;
     }
 
     @JsonCreator
@@ -39,5 +42,17 @@ public class Film {
         this.description = description;
         this.releaseDate = releaseDate;
         this.duration = duration;
+        this.likes = new HashSet<>();
+        this.rate = rate;
+    }
+
+    public void addLike(Long id) {
+        likes.add(id);
+        rate++;
+    }
+
+    public void deleteLike(Long id) {
+        likes.remove(id);
+        rate--;
     }
 }
