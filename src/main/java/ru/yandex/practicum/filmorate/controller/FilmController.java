@@ -5,11 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 import ru.yandex.practicum.filmorate.util.Validator;
 
 import javax.validation.Valid;
@@ -21,6 +18,7 @@ public class FilmController {
 
     FilmService filmService;
     private static final Logger log = LoggerFactory.getLogger(FilmController.class);
+
     @Autowired
     public FilmController(FilmService filmService) {
         this.filmService = filmService;
@@ -63,7 +61,6 @@ public class FilmController {
         filmService.addLike(id, userId);
     }
 
-
     @DeleteMapping
     public void removeFilm(@RequestBody Long id) {
         log.info("Получен запрос DELETE /films - удаление фильма");
@@ -77,6 +74,4 @@ public class FilmController {
         Validator.validateID(userId);
         filmService.deleteLike(id, userId);
     }
-
-
 }
