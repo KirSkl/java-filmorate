@@ -3,21 +3,15 @@ package ru.yandex.practicum.filmorate.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
-import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 import ru.yandex.practicum.filmorate.util.Validator;
 
 import javax.validation.Valid;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
@@ -54,6 +48,7 @@ public class UserController {
         Validator.validateID(otherId);
         return userService.showCommonFriends(id, otherId);
     }
+
     @PostMapping
     public User createUser(@Valid @RequestBody User user) {
         log.info("Получен запрос POST /users - добавление пользователя");
@@ -71,6 +66,7 @@ public class UserController {
         log.info("Пользователь обновлен");
         return user;
     }
+
     @PutMapping("{id}/friends/{friendId}")
     public void addToFriends(@PathVariable Long id, @PathVariable Long friendId) {
         Validator.validateID(id);
