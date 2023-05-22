@@ -5,12 +5,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
+
 import ru.yandex.practicum.filmorate.controller.FilmController;
-import ru.yandex.practicum.filmorate.controller.UserController;
-import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.util.Validator;
 
 import javax.validation.Valid;
 import java.util.Collection;
@@ -29,6 +27,7 @@ public class InMemoryUserStorage implements UserStorage {
     public Collection<User> findAllUsers() {
         return users.values();
     }
+
     @Override
     public User addUser(User user) {
         user.setId(getId());

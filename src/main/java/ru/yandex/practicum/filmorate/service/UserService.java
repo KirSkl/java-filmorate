@@ -19,6 +19,7 @@ public class UserService {
     public UserService(InMemoryUserStorage userStorage) {
         this.userStorage = userStorage;
     }
+
     public Collection<User> findAllUsers() {
         return userStorage.findAllUsers();
     }

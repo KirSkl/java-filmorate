@@ -3,13 +3,13 @@ package ru.yandex.practicum.filmorate.storage;
 import lombok.Data;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
+
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @Component
 @Data

@@ -10,5 +10,4 @@ public interface FilmStorage {
     void removeFilm(Long id);
     Film updateFilm(Film film);
     Film getFilmById(Long id);
-
 }
