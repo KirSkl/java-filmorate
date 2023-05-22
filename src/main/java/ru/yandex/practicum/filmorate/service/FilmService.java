@@ -1,14 +1,10 @@
 package ru.yandex.practicum.filmorate.service;
 
-import org.apache.logging.log4j.util.PropertySource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
-import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
+
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.Collection;
@@ -16,17 +12,12 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.util.Comparator.comparingInt;
-
 @Service
 public class FilmService {
-    private FilmStorage filmStorage;
-    private UserStorage userStorage;
-
+    private final FilmStorage filmStorage;
     @Autowired
-    public FilmService(FilmStorage filmStorage, UserStorage userStorage) {
+    public FilmService(FilmStorage filmStorage) {
         this.filmStorage = filmStorage;
-        this.userStorage = userStorage;
     }
 
     public Collection<Film> findAllFilms() {
@@ -54,12 +45,6 @@ public class FilmService {
     }
 
     public void deleteLike(Long idFilm, Long idUser) {
-        /*if (!filmStorage.getFilms().containsKey(idFilm)) {
-            throw new FilmNotFoundException("Фильм с таким ID не найден");
-        }
-        if (!userStorage.getUsers().containsKey(idUser)) {
-            throw new UserNotFoundException("Пользователь с таким ID не найден");
-        }*/
         filmStorage.getFilmById(idFilm).deleteLike(idUser);
     }
 
