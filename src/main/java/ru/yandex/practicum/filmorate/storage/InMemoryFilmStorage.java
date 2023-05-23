@@ -16,7 +16,6 @@ import java.util.Map;
 public class InMemoryFilmStorage implements FilmStorage {
 
     private Long id = 0L;
-    @Getter
     private Map<Long, Film> films = new HashMap<>();
 
     @Override
