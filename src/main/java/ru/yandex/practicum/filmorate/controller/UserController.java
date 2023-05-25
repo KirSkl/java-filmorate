@@ -83,6 +83,7 @@ public class UserController {
     @DeleteMapping
     public void removeUser(@RequestBody Long id) {
         log.info("Получен запрос DELETE /users - удаление пользователя");
+        Validator.validateID(id);
         userService.removeUser(id);
         log.info("Пользователь удален");
     }
