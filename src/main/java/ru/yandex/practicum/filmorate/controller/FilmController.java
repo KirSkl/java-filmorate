@@ -69,6 +69,7 @@ public class FilmController {
     @DeleteMapping
     public void removeFilm(@RequestBody Long id) {
         log.info("Получен запрос DELETE /films - удаление фильма");
+        Validator.validateID(id);
         filmService.removeFilm(id);
         log.info("Фильм удален");
     }
