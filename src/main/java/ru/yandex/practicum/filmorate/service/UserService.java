@@ -52,14 +52,14 @@ public class UserService {
 
     public List<User> getFriendsOfUser(Long id) {
         Set<Long> friendsIds =  userStorage.getUserById(id).getFriends();
-        return userStorage.findAllUsers().stream().filter(o -> friendsIds.contains(o.getId()))
+        return userStorage.findAllUsers().stream().filter(user -> friendsIds.contains(user.getId()))
                 .collect(Collectors.toList());
     }
 
     public List<User> showCommonFriends(Long idFirstFriend, Long idSecondFriend) {
         return userStorage.findAllUsers().stream()
-                .filter(o -> o.getFriends().contains(idFirstFriend)
-                        && o.getFriends().contains(idSecondFriend))
+                .filter(user -> user.getFriends().contains(idFirstFriend)
+                        && user.getFriends().contains(idSecondFriend))
                 .collect(Collectors.toList());
     }
 }
