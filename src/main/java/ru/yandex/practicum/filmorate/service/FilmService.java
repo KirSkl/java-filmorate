@@ -50,7 +50,7 @@ public class FilmService {
 
     public List<Film> getMostPopularFilms(int count) {
         return filmStorage.findAllFilms().stream()
-                .sorted(Comparator.comparingInt(o -> -o.getRate())).limit(count)
+                .sorted(Comparator.comparingInt(film -> -film.getRate())).limit(count)
                 .collect(Collectors.toList());
     }
 }
