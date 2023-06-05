@@ -1,11 +1,11 @@
 # java-filmorate
 Template repository for Filmorate project.
-![Схема базы данных, использeумая в приложении](https://github.com/KirSkl/java-filmorate/blob/add-sql-diagramm/filmorate-sql.png)
+![Схема базы данных, использeумая в приложении]([filmorate-sql-scheme.png](https://github.com/KirSkl/java-filmorate/blob/add-sql-diagramm/filmorate-sql-scheme.png))
 
-film
+films
 Эта таблица содержит данные о фильмах. Первичный ключ - id фильма.
 
-user
+users
 Эта таблица содержит данные о пользователях
 
 likes
@@ -22,14 +22,14 @@ status - содержит информацию о том, было предло�
 
 Примеры запросов:
 Получение продолжительности фильма:
-SELECT duration FROM film WHERE film_id = 1
+SELECT duration FROM films WHERE film_id = 1
 
 Получение адреса электронной почты пользователя по его логину:
-SELECT email FROM user WHERE login = 'Xatab'
+SELECT email FROM users WHERE login = 'Xatab'
 
 Получение информации о том, какие пользователи лайкнули фильм:
 SELECT user_id FROM likes WHERE film_id = 1
 
 Получение списка друзей пользователя c id = 1:
 
-SELECT offeror_id, acceptor_id FROM friends WHERE (offeror_id = 1 OR acceptor_id = 1) AND status = 'accepted'
+SELECT offeror_id, acceptor_id FROM friends WHERE (offeror_id = 1 OR acceptor_id = 1) AND status = 'true'
