@@ -21,6 +21,8 @@ public class Film {
     private final int duration;
     private Set<Long> likes;
     private int rate = 0;
+    private MPARating mpaRating;
+    private List<Genre> genres;
 
 
     public Film(Long id, String name,  String description,
