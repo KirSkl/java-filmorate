@@ -2,12 +2,15 @@ package ru.yandex.practicum.filmorate.storage;
 
 import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.util.Collection;
+import java.util.*;
 
-@Component("DaoImpl")
+@Component("FilmDaoImpl")
 @AllArgsConstructor
 public class FilmDbStorage implements FilmStorage {
 
@@ -15,17 +18,44 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Collection<Film> findAllFilms() {
-        return null;
+        Collection<Film> films = new ArrayList<>();
+        SqlRowSet filmRows = jdbcTemplate.queryForRowSet("select * from films");
+        while (filmRows.next()) {
+            Film film = new Film(filmRows.getLong("film_id"),
+                    filmRows.getString("name"),
+                    filmRows.getString("description"),
+                    filmRows.getDate("release_date").toLocalDate(),
+                    filmRows.getInt("duration"));
+
+            SqlRowSet likesRows = jdbcTemplate.queryForRowSet(
+                    "select user_id from likes where film_id = ?", film.getId());
+            Set<Long> likes = new HashSet<>();
+            while (likesRows.next()) {
+                likes.add(likesRows.getLong("user_id"));
+            }
+            film.setLikes(likes);
+            films.add(film);
+        }
+        return films;
     }
 
     @Override
     public Film addFilm(Film film) {
-        return null;
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("films")
+                .usingGeneratedKeyColumns("film_id");
+        film.setId(simpleJdbcInsert.executeAndReturnKey(this.FilmToMap(film)).longValue());
+        return film;
     }
 
     @Override
     public void removeFilm(Long id) {
-
+        final String sqlIsExists = "SELECT COUNT(*) From FILMS WHERE FILM_ID=?";
+        if (jdbcTemplate.queryForObject(sqlIsExists, Integer.class, id) == 0) {
+            throw new FilmNotFoundException("Фильм с таким ID не найден");
+        }
+        String sqlQuery = "delete from films where film_id = ?";
+        jdbcTemplate.update(sqlQuery, id);
     }
 
     @Override
@@ -35,6 +65,30 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film getFilmById(Long id) {
-        return null;
+        final String sqlIsExists = "SELECT COUNT(*) From FILMS WHERE FILM_ID=?";
+        if (jdbcTemplate.queryForObject(sqlIsExists, Integer.class, id) == 0) {
+            throw new FilmNotFoundException("Фильм с таким ID не найден");
+        }
+        SqlRowSet filmRows = jdbcTemplate.queryForRowSet(
+                "select * from films where film_id = ?", id);
+        Film film = null;
+        if(filmRows.next()) {
+            film = new Film(
+                    filmRows.getLong("film_id"),
+                    filmRows.getString("name"),
+                    filmRows.getString("description"),
+                    filmRows.getDate("release_date").toLocalDate(),
+                    filmRows.getInt("duration"));
+        }
+        return film;
+    }
+
+    public Map<String, Object> FilmToMap(Film film) {
+        Map<String, Object> values = new HashMap<>();
+        values.put("name", film.getName());
+        values.put("description", film.getDescription());
+        values.put("release_date", film.getReleaseDate());
+        values.put("duration", film.getDuration());
+        return values;
     }
 }

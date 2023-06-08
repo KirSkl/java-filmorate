@@ -7,7 +7,7 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.Collection;
 
-@Component("DaoImpl")
+@Component("UserDaoImpl")
 @AllArgsConstructor
 public class UserDbStorage implements UserStorage {
 

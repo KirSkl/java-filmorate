@@ -15,11 +15,10 @@ import java.util.stream.Collectors;
 @Service
 public class FilmService {
 
-    @Qualifier("DaoImpl")
     private final FilmStorage filmStorage;
 
     @Autowired
-    public FilmService(FilmStorage filmStorage) {
+    public FilmService(@Qualifier("FilmDaoImpl")FilmStorage filmStorage) {
         this.filmStorage = filmStorage;
     }
 
@@ -53,7 +52,7 @@ public class FilmService {
 
     public List<Film> getMostPopularFilms(int count) {
         return filmStorage.findAllFilms().stream()
-                .sorted(Comparator.comparingInt(film -> -film.getRate())).limit(count)
+                .sorted(Comparator.comparingInt(film -> -film.getLikes().size())).limit(count)
                 .collect(Collectors.toList());
     }
 }
