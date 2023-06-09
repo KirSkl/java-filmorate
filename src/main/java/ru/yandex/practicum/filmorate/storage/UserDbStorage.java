@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.storage;
 
 import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
@@ -29,17 +30,35 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User addUser(User user) {
-        return null;
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("users")
+                .usingGeneratedKeyColumns("user_id");
+        user.setId(simpleJdbcInsert.executeAndReturnKey(this.UserToMap(user)).longValue());
+        return user;
     }
 
     @Override
     public User updateUser(User user) {
-        return null;
+        String sqlQuery = "update users set " +
+                "name = ?, email = ?, login = ?, birthday = ? " +
+                "where user_id = ?";
+        jdbcTemplate.update(sqlQuery
+                , user.getName()
+                , user.getEmail()
+                , user.getLogin()
+                , user.getBirthday()
+                , user.getId());
+        return user;
     }
 
     @Override
     public void removeUser(Long id) {
-
+        final String sqlIsExists = "select count(*) From users WHERE user_id = ?";
+        if (jdbcTemplate.queryForObject(sqlIsExists, Integer.class, id) == 0) {
+            throw new UserNotFoundException("Пользователь с таким ID не найден");
+        }
+        String sqlQuery = "delete from users where user_id = ?";
+        jdbcTemplate.update(sqlQuery, id);
     }
 
     @Override
@@ -93,5 +112,14 @@ public class UserDbStorage implements UserStorage {
         );
         user.setFriends(getIdsFriends(user.getId()));
         return user;
+    }
+
+    public Map<String, Object> UserToMap(User user) {
+        Map<String, Object> values = new HashMap<>();
+        values.put("name", user.getName());
+        values.put("email", user.getEmail());
+        values.put("login", user.getLogin());
+        values.put("birthday", user.getBirthday());
+        return values;
     }
 }

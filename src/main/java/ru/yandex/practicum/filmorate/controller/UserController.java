@@ -80,8 +80,8 @@ public class UserController {
         log.info("Пользователь добавлен в друзья");
     }
 
-    @DeleteMapping
-    public void removeUser(@RequestBody Long id) {
+    @DeleteMapping("{id}")
+    public void removeUser(@PathVariable Long id) {
         log.info("Получен запрос DELETE /users - удаление пользователя");
         Validator.validateID(id);
         userService.removeUser(id);
