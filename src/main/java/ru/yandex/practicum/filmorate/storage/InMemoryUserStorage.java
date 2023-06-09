@@ -13,6 +13,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import javax.validation.Valid;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -59,6 +60,11 @@ public class InMemoryUserStorage implements UserStorage {
             throw new UserNotFoundException("Пользователь с таким ID не найден");
         }
         return users.get(id);
+    }
+
+    @Override
+    public List<User> getListFriends(Long id) {
+        return null;
     }
 
     private long getId() {
