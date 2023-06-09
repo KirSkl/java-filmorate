@@ -72,6 +72,17 @@ public class InMemoryUserStorage implements UserStorage {
 
     }
 
+    @Override
+    public void removeFromFriends(Long id1, Long id2) {
+
+    }
+
+    @Override
+    public List<User> getCommonFriends(Long idFirstFriend, Long idSecondFriend) {
+        return null;
+    }
+
+
     private long getId() {
         return ++id;
     }
