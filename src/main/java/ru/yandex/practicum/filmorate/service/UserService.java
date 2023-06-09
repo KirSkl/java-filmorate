@@ -52,9 +52,7 @@ public class UserService {
     }
 
     public List<User> getFriendsOfUser(Long id) {
-        Set<Long> friendsIds =  userStorage.getUserById(id).getFriends();
-        return userStorage.findAllUsers().stream().filter(user -> friendsIds.contains(user.getId()))
-                .collect(Collectors.toList());
+        return userStorage.getListFriends(id);
     }
 
     public List<User> showCommonFriends(Long idFirstFriend, Long idSecondFriend) {
