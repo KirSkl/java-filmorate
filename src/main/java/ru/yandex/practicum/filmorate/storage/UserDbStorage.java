@@ -95,6 +95,27 @@ public class UserDbStorage implements UserStorage {
                 execute(this.friendsToMap(idOfferor, idAcceptor));
     }
 
+    @Override
+    public void removeFromFriends(Long id1, Long id2) {
+        String sqlQuery = "delete from friends where offeror_id in (?, ?) and acceptor_id in (?, ?)";
+        jdbcTemplate.update(sqlQuery, id1, id2, id1, id2);
+    }
+
+    @Override
+    public List<User> getCommonFriends(Long idFirstFriend, Long idSecondFriend) {
+        List<User> commonFriends = new ArrayList<>();
+        SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet("SELECT DISTINCT * FROM users WHERE user_id IN "
+                + "((SELECT acceptor_id FROM friends WHERE offeror_id = ? AND status = true),"
+                + "(SELECT offeror_id FROM friends WHERE acceptor_id = ? )) AND user_id in"
+                + "((SELECT acceptor_id FROM friends WHERE offeror_id = ? "
+                + "AND status = true), (SELECT offeror_id FROM friends WHERE acceptor_id =  ? ));",
+                idFirstFriend, idFirstFriend, idSecondFriend, idSecondFriend);
+        while (sqlRowSet.next()) {
+            commonFriends.add(getUser(sqlRowSet));
+        }
+        return commonFriends;
+    }
+
     private Set<Long> getIdsFriends(Long id) {
         SqlRowSet friendsRows = jdbcTemplate.queryForRowSet(
                 "select * from friends where acceptor_id = ?", id);

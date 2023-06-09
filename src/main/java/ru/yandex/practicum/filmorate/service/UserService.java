@@ -46,8 +46,7 @@ public class UserService {
     }
 
     public void removeFromFriends(Long idFirstFriend, Long idSecondFriend) {
-        userStorage.getUserById(idFirstFriend).getFriends().remove(idSecondFriend);
-        userStorage.getUserById(idSecondFriend).getFriends().remove(idSecondFriend);
+        userStorage.removeFromFriends(idFirstFriend, idSecondFriend);
     }
 
     public List<User> getFriendsOfUser(Long id) {
@@ -55,9 +54,6 @@ public class UserService {
     }
 
     public List<User> showCommonFriends(Long idFirstFriend, Long idSecondFriend) {
-        return userStorage.findAllUsers().stream()
-                .filter(user -> user.getFriends().contains(idFirstFriend)
-                        && user.getFriends().contains(idSecondFriend))
-                .collect(Collectors.toList());
+        return userStorage.getCommonFriends(idFirstFriend, idSecondFriend);
     }
 }
