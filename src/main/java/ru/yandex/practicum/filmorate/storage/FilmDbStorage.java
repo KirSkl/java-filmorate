@@ -92,12 +92,23 @@ public class FilmDbStorage implements FilmStorage {
         return film;
     }
 
+    public void addLike(Long filmId, Long userId) {
+        new SimpleJdbcInsert(jdbcTemplate).withTableName("likes").execute(this.likeToMap(filmId, userId));
+    }
+
     public Map<String, Object> FilmToMap(Film film) {
         Map<String, Object> values = new HashMap<>();
         values.put("name", film.getName());
         values.put("description", film.getDescription());
         values.put("release_date", film.getReleaseDate());
         values.put("duration", film.getDuration());
+        return values;
+    }
+
+    public Map<String, Object> likeToMap(Long filmId, Long userId) {
+        Map<String, Object> values = new HashMap<>();
+        values.put("film_id", filmId);
+        values.put("user_id", userId);
         return values;
     }
 }
