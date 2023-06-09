@@ -82,9 +82,17 @@ public class UserDbStorage implements UserStorage {
         for (Long friendId : getIdsFriends(id)){
             SqlRowSet friendRows = jdbcTemplate.queryForRowSet(
                     "select * from users where user_id = ?", friendId);
+            if (friendRows.next()) {
             friends.add(getUser(friendRows));
+            }
         }
         return friends;
+    }
+
+    @Override
+    public void addToFriends(Long idOfferor, long idAcceptor) {
+        new SimpleJdbcInsert(jdbcTemplate).withTableName("friends").
+                execute(this.friendsToMap(idOfferor, idAcceptor));
     }
 
     private Set<Long> getIdsFriends(Long id) {
@@ -120,6 +128,13 @@ public class UserDbStorage implements UserStorage {
         values.put("email", user.getEmail());
         values.put("login", user.getLogin());
         values.put("birthday", user.getBirthday());
+        return values;
+    }
+
+    public Map<String, Object> friendsToMap(Long idOfferor, Long idAcceptor) {
+        Map<String, Object> values = new HashMap<>();
+        values.put("offeror_id", idOfferor);
+        values.put("acceptor_id", idAcceptor);
         return values;
     }
 }

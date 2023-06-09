@@ -77,7 +77,7 @@ public class UserController {
         Validator.validateID(id);
         Validator.validateID(friendId);
         userService.addToFriends(id, friendId);
-        log.info("Пользователь добавлен в друзья");
+        log.info("Пользователю отправлена заявка на добавление в друзья");
     }
 
     @DeleteMapping("{id}")

@@ -42,8 +42,7 @@ public class UserService {
     }
 
     public void addToFriends(Long idFirstFriend, Long idSecondFriend) {
-        userStorage.getUserById(idFirstFriend).getFriends().add(idSecondFriend);
-        userStorage.getUserById(idSecondFriend).getFriends().add(idFirstFriend);
+        userStorage.addToFriends(idFirstFriend, idSecondFriend);
     }
 
     public void removeFromFriends(Long idFirstFriend, Long idSecondFriend) {
