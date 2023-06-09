@@ -67,6 +67,11 @@ public class InMemoryUserStorage implements UserStorage {
         return null;
     }
 
+    @Override
+    public void addToFriends(Long idOfferor, long idAcceptor) {
+
+    }
+
     private long getId() {
         return ++id;
     }
