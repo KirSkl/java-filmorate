@@ -15,6 +15,7 @@ import java.util.*;
 public class FilmDbStorage implements FilmStorage {
 
     private final JdbcTemplate jdbcTemplate;
+    private final GenreDao genreDao;
 
     @Override
     public Collection<Film> findAllFilms() {
@@ -33,6 +34,7 @@ public class FilmDbStorage implements FilmStorage {
                 .withTableName("films")
                 .usingGeneratedKeyColumns("film_id");
         film.setId(simpleJdbcInsert.executeAndReturnKey(this.FilmToMap(film)).longValue());
+        updateGenres(film);
         return film;
     }
 
@@ -61,6 +63,7 @@ public class FilmDbStorage implements FilmStorage {
                 , film.getReleaseDate()
                 , film.getDuration()
                 , film.getId());
+        updateGenres(film);
         return film;
     }
 
@@ -89,6 +92,7 @@ public class FilmDbStorage implements FilmStorage {
         values.put("description", film.getDescription());
         values.put("release_date", film.getReleaseDate());
         values.put("duration", film.getDuration());
+        values.put("mpa_rate_id", film.getMpaRating());
         return values;
     }
 
@@ -123,5 +127,25 @@ public class FilmDbStorage implements FilmStorage {
         }
         film.setLikes(likes);
         return film;
+    }
+
+    private Map<String, Object> FilmToGenresMap(Film film) {
+        Map<String, Object> values = new HashMap<>();
+        for (Integer genreId : film.getGenres()) {
+            values.put("film_id", film.getId());
+            values.put("genre_id", genreId);
+        }
+        return values;
+    }
+
+    private void clearGenres(Film film) {
+        jdbcTemplate.update("DELETE * FROM filmes_genres where FILM_ID = ?", film.getId());
+    }
+
+    private void updateGenres(Film film) {
+        clearGenres(film);
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("filmes_genres");
+        simpleJdbcInsert.executeAndReturnKey(this.FilmToGenresMap(film));
     }
 }
