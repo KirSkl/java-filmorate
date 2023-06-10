@@ -3,10 +3,7 @@ package ru.yandex.practicum.filmorate.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
-import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
-import ru.yandex.practicum.filmorate.exception.ValidationIDException;
+import ru.yandex.practicum.filmorate.exception.*;
 
 import java.util.Map;
 
@@ -14,7 +11,8 @@ import java.util.Map;
 @ResponseBody
 public class ErrorHandlerController {
 
-    @ExceptionHandler({UserNotFoundException.class, FilmNotFoundException.class})
+    @ExceptionHandler({UserNotFoundException.class, FilmNotFoundException.class,
+            GenreNotFoundException.class, MpaNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, String> handleNotFoundException(RuntimeException e) {
         return Map.of("error:", "Не найдено", "errorMessage", e.getMessage());
