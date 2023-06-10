@@ -55,14 +55,15 @@ public class FilmDbStorage implements FilmStorage {
             throw new FilmNotFoundException("Фильм с таким ID не найден");
         }
         String sqlQuery = "update films set " +
-                "name = ?, description = ?, release_date = ?, duration = ? " +
+                "name = ?, description = ?, release_date = ?, duration = ?, mpa_rate_id = ? " +
                 "where film_id = ?";
         jdbcTemplate.update(sqlQuery
                 , film.getName()
                 , film.getDescription()
                 , film.getReleaseDate()
                 , film.getDuration()
-                , film.getId());
+                , film.getId()
+                , film.getMpaRating());
         updateGenres(film);
         return film;
     }
@@ -113,7 +114,8 @@ public class FilmDbStorage implements FilmStorage {
                 new ArrayList<Integer>());
 
         List<Integer> genres = new ArrayList<>();
-        SqlRowSet genresRow = jdbcTemplate.queryForRowSet("select genre_id where film_id = ?", film.getId());
+        SqlRowSet genresRow = jdbcTemplate.queryForRowSet(
+                "select genre_id from filmes_genres where film_id = ?", film.getId());
         while(genresRow.next()) {
             genres.add(genresRow.getInt("genre_id"));
         }
