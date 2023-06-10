@@ -95,6 +95,7 @@ public class UserDbStorage implements UserStorage {
     public void addToFriends(Long idOfferor, long idAcceptor) {
         new SimpleJdbcInsert(jdbcTemplate).withTableName("friends").
                 execute(this.friendsToMap(idOfferor, idAcceptor));
+
     }
 
     @Override

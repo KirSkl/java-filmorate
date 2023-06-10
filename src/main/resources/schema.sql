@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS friends
 (
     offeror_id bigint NOT NULL,
     acceptor_id bigint NOT NULL,
-    status boolean DEFAULT(0),
+    status boolean,
     CONSTRAINT friends_pk PRIMARY KEY (offeror_id, acceptor_id),
     CONSTRAINT friends_fk1 FOREIGN KEY (offeror_id) REFERENCES users (user_id) ON DELETE CASCADE,
     CONSTRAINT friends_fk2 FOREIGN KEY (acceptor_id) REFERENCES users (user_id) ON DELETE CASCADE
