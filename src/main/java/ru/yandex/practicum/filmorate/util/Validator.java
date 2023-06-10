@@ -38,4 +38,12 @@ public class Validator {
             throw new ValidationIDException("ID меньше 1");
         }
     }
+
+    public static void validateID(int id) {
+        if (id < 1) {
+            log.info("Ошибочный запрос - такой ID не может существовать");
+            throw new ValidationIDException("ID меньше 1");
+        }
+    }
+
 }
