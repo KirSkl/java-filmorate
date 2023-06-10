@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import ru.yandex.practicum.filmorate.exception.MpaNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.util.Validator;
@@ -46,6 +47,9 @@ public class FilmController {
     @PostMapping
     public Film createFilm(@Valid @RequestBody Film film) {
         log.info("Получен запрос POST /films - добавление фильма");
+        if (film.getMpaRating() == null) {
+            throw new MpaNotFoundException("Не указан рейтинг");
+        }
         Validator.validateFilm(film);
         return filmService.addFilm(film);
     }

@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
@@ -22,12 +23,14 @@ public class Film {
     private final int duration;
     private Set<Long> likes;
     //private int rate = 0;
-    private int mpaRating;
+    @JsonFormat(shape = JsonFormat.Shape.OBJECT)
+    @JsonProperty("mpa")
+    private MPARating mpaRating;
     private List<Integer> genres;
 
 
     public Film(Long id, String name,  String description,
-            LocalDate releaseDate,  int duration, int mpaRating, List<Integer> genres) {
+            LocalDate releaseDate,  int duration, MPARating mpaRating, List<Integer> genres) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -40,7 +43,7 @@ public class Film {
 
     @JsonCreator
     public Film(@JsonProperty String name, @JsonProperty String description, @JsonProperty LocalDate releaseDate,
-            @JsonProperty int duration, @JsonProperty int mpaRating, @JsonProperty List<Integer> genres) {
+            @JsonProperty int duration, @JsonProperty MPARating mpaRating, @JsonProperty List<Integer> genres) {
         this.name = name;
         this.description = description;
         this.releaseDate = releaseDate;

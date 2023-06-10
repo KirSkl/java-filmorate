@@ -4,9 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-@AllArgsConstructor
 public class MPARating {
 
     private int id;
     private String name;
+
+    public MPARating(int id) {
+        this.id = id;
+    }
+
+    public MPARating(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }
