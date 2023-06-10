@@ -22,29 +22,32 @@ public class Film {
     private final int duration;
     private Set<Long> likes;
     //private int rate = 0;
-    private MPARating mpaRating;
-    private List<Genre> genres;
+    private int mpaRating;
+    private List<Integer> genres;
 
 
     public Film(Long id, String name,  String description,
-            LocalDate releaseDate,  int duration /*int rate*/) {
+            LocalDate releaseDate,  int duration, int mpaRating, List<Integer> genres) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.releaseDate = releaseDate;
         this.duration = duration;
         this.likes = new HashSet<>();
-        //this.rate = rate;
+        this.mpaRating = mpaRating;
+        this.genres = genres;
     }
 
     @JsonCreator
     public Film(@JsonProperty String name, @JsonProperty String description, @JsonProperty LocalDate releaseDate,
-            @JsonProperty int duration) {
+            @JsonProperty int duration, @JsonProperty int mpaRating, @JsonProperty List<Integer> genres) {
         this.name = name;
         this.description = description;
         this.releaseDate = releaseDate;
         this.duration = duration;
         this.likes = new HashSet<>();
+        this.mpaRating = mpaRating;
+        this.genres = genres;
     }
 
     public void addLike(Long id) {
