@@ -21,19 +21,7 @@ public class FilmDbStorage implements FilmStorage {
         Collection<Film> films = new ArrayList<>();
         SqlRowSet filmRows = jdbcTemplate.queryForRowSet("select * from films");
         while (filmRows.next()) {
-            Film film = new Film(filmRows.getLong("film_id"),
-                    filmRows.getString("name"),
-                    filmRows.getString("description"),
-                    filmRows.getDate("release_date").toLocalDate(),
-                    filmRows.getInt("duration"));
-
-            SqlRowSet likesRows = jdbcTemplate.queryForRowSet(
-                    "select user_id from likes where film_id = ?", film.getId());
-            Set<Long> likes = new HashSet<>();
-            while (likesRows.next()) {
-                likes.add(likesRows.getLong("user_id"));
-            }
-            film.setLikes(likes);
+            Film film = getFilm(filmRows);
             films.add(film);
         }
         return films;
@@ -86,12 +74,7 @@ public class FilmDbStorage implements FilmStorage {
                 "select * from films where film_id = ?", id);
         Film film = null;
         if(filmRows.next()) {
-            film = new Film(
-                    filmRows.getLong("film_id"),
-                    filmRows.getString("name"),
-                    filmRows.getString("description"),
-                    filmRows.getDate("release_date").toLocalDate(),
-                    filmRows.getInt("duration"));
+            film = getFilm(filmRows);
         }
         return film;
     }
@@ -114,5 +97,31 @@ public class FilmDbStorage implements FilmStorage {
         values.put("film_id", filmId);
         values.put("user_id", userId);
         return values;
+    }
+
+    private Film getFilm(SqlRowSet filmRows) {
+        Film film = new Film(filmRows.getLong("film_id"),
+                filmRows.getString("name"),
+                filmRows.getString("description"),
+                filmRows.getDate("release_date").toLocalDate(),
+                filmRows.getInt("duration"),
+                filmRows.getInt("mpa_rate_id"),
+                new ArrayList<Integer>());
+
+        List<Integer> genres = new ArrayList<>();
+        SqlRowSet genresRow = jdbcTemplate.queryForRowSet("select genre_id where film_id = ?", film.getId());
+        while(genresRow.next()) {
+            genres.add(genresRow.getInt("genre_id"));
+        }
+        film.setGenres(genres);
+
+        SqlRowSet likesRows = jdbcTemplate.queryForRowSet(
+                "select user_id from likes where film_id = ?", film.getId());
+        Set<Long> likes = new HashSet<>();
+        while (likesRows.next()) {
+            likes.add(likesRows.getLong("user_id"));
+        }
+        film.setLikes(likes);
+        return film;
     }
 }
