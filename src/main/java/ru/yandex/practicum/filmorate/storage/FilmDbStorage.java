@@ -60,6 +60,10 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film updateFilm(Film film) {
+        final String sqlIsExists = "SELECT COUNT(*) From FILMS WHERE FILM_ID=?";
+        if (jdbcTemplate.queryForObject(sqlIsExists, Integer.class, film.getId()) == 0) {
+            throw new FilmNotFoundException("Фильм с таким ID не найден");
+        }
         String sqlQuery = "update films set " +
                 "name = ?, description = ?, release_date = ?, duration = ? " +
                 "where film_id = ?";

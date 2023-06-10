@@ -39,6 +39,10 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User updateUser(User user) {
+        final String sqlIsExists = "select count(*) From users WHERE user_id = ?";
+        if (jdbcTemplate.queryForObject(sqlIsExists, Integer.class, user.getId()) == 0) {
+            throw new UserNotFoundException("Пользователь с таким ID не найден");
+        }
         String sqlQuery = "update users set " +
                 "name = ?, email = ?, login = ?, birthday = ? " +
                 "where user_id = ?";
