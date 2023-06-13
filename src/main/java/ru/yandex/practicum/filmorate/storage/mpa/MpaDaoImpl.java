@@ -32,7 +32,7 @@ public class MpaDaoImpl implements MpaDao {
         if (jdbcTemplate.queryForObject(sqlIsExists, Integer.class, id) == 0) {
             throw new MpaNotFoundException("Рейтинг с таким ID не найден");
         }
-        SqlRowSet rateRows = jdbcTemplate.queryForRowSet("SELECT * FROM mpa_rating WHERE mpa_rate_id = ?");
+        SqlRowSet rateRows = jdbcTemplate.queryForRowSet("SELECT * FROM mpa_rating WHERE mpa_rate_id = ?", id);
         MPARating mpaRating = null;
         if (rateRows.next()) {
             mpaRating = getRating(rateRows);
