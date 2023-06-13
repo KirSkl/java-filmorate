@@ -7,6 +7,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.MPARating;
 
 import java.util.*;
@@ -21,8 +22,7 @@ public class FilmDbStorage implements FilmStorage {
     public Collection<Film> findAllFilms() {
         Collection<Film> films = new ArrayList<>();
         SqlRowSet filmRows = jdbcTemplate.queryForRowSet(
-                "SELECT film_id, f.name AS title, description, release_date, duration, f.mpa_rate_id, mr.name FROM films f "
-                        + "LEFT JOIN MPA_RATING mr ON f.MPA_RATE_ID = mr.MPA_RATE_ID");
+                "SELECT * from films");
         while (filmRows.next()) {
             Film film = getFilm(filmRows);
             films.add(film);
@@ -67,7 +67,7 @@ public class FilmDbStorage implements FilmStorage {
                 , film.getMpaRating().getId()
                 , film.getId());
         updateGenres(film);
-        return film;
+        return getFilmById(film.getId());
     }
 
     @Override
@@ -76,10 +76,10 @@ public class FilmDbStorage implements FilmStorage {
         if (jdbcTemplate.queryForObject(sqlIsExists, Integer.class, id) == 0) {
             throw new FilmNotFoundException("Фильм с таким ID не найден");
         }
-        SqlRowSet filmRows = jdbcTemplate.queryForRowSet(
-                "SELECT f.name AS title, mr.name FROM films f "
-                        + "LEFT JOIN MPA_RATING mr ON f.MPA_RATE_ID = mr.MPA_RATE_ID "
-                        + "WHERE film_id = ?", id);
+        SqlRowSet filmRows = jdbcTemplate.queryForRowSet("SELECT film_id, f.name AS title, description, "
+                + "release_date, duration, f.mpa_rate_id, mr.name FROM films f "
+                + "LEFT JOIN MPA_RATING mr ON f.MPA_RATE_ID = mr.MPA_RATE_ID "
+                + "WHERE film_id = ?", id);
         Film film = null;
         if(filmRows.next()) {
             film = getFilm(filmRows);
@@ -109,21 +109,27 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     private Film getFilm(SqlRowSet filmRows) {
-        MPARating mpaRating = new MPARating(filmRows.getInt("mpa_rate_id"), filmRows.getString("name"));
         Film film = new Film(filmRows.getLong("film_id"),
                 filmRows.getString("name"),
                 filmRows.getString("description"),
                 filmRows.getDate("release_date").toLocalDate(),
                 filmRows.getInt("duration"),
-                //mpaRating,
                 new MPARating(filmRows.getInt("mpa_rate_id"), filmRows.getString("name")),
-                new ArrayList<Integer>());
+                new ArrayList<Genre>());
 
-        List<Integer> genres = new ArrayList<>();
+        SqlRowSet mpaRows = jdbcTemplate.queryForRowSet(
+                "select name from mpa_rating where mpa_rate_id = ?",
+                film.getMpaRating().getId());
+        if(mpaRows.next()) {
+            film.getMpaRating().setName(mpaRows.getString("name"));
+        }
+        List<Genre> genres = new ArrayList<>();
         SqlRowSet genresRow = jdbcTemplate.queryForRowSet(
-                "select genre_id from filmes_genres where film_id = ?", film.getId());
+                "select * from filmes_genres fg left join genres g on fg.genre_id = g.genre_id where film_id = ?",
+                film.getId());
         while(genresRow.next()) {
-            genres.add(genresRow.getInt("genre_id"));
+            genres.add(new Genre(genresRow.getInt("genre_id"),
+                    genresRow.getString("name")));
         }
         film.setGenres(genres);
 
@@ -137,12 +143,10 @@ public class FilmDbStorage implements FilmStorage {
         return film;
     }
 
-    private Map<String, Object> FilmToGenresMap(Film film) {
+    private Map<String, Object> genresToMap(Long id, Genre genre) {
         Map<String, Object> values = new HashMap<>();
-        for (Integer genreId : film.getGenres()) {
-            values.put("film_id", film.getId());
-            values.put("genre_id", genreId);
-        }
+        values.put("film_id", id);
+        values.put("genre_id", genre.getId());
         return values;
     }
 
@@ -152,11 +156,13 @@ public class FilmDbStorage implements FilmStorage {
 
     private void updateGenres(Film film) {
         clearGenres(film);
-        if (film.getGenres() == null) {
+        if (film.getGenres() == null || film.getGenres().isEmpty()) {
             return;
         }
-        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("filmes_genres");
-        simpleJdbcInsert.executeAndReturnKey(this.FilmToGenresMap(film));
+        for (Genre genre : film.getGenres()) {
+            SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                    .withTableName("filmes_genres");
+            simpleJdbcInsert.execute(this.genresToMap(film.getId(), genre));
+        }
     }
 }
