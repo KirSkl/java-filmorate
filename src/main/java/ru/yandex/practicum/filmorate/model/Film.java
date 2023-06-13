@@ -26,11 +26,11 @@ public class Film {
     @JsonFormat(shape = JsonFormat.Shape.OBJECT)
     @JsonProperty("mpa")
     private MPARating mpaRating;
-    private List<Integer> genres;
+    private List<Genre> genres;
 
 
     public Film(Long id, String name,  String description,
-            LocalDate releaseDate,  int duration, MPARating mpaRating, List<Integer> genres) {
+            LocalDate releaseDate,  int duration, MPARating mpaRating, List<Genre> genres) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -43,7 +43,7 @@ public class Film {
 
     @JsonCreator
     public Film(@JsonProperty String name, @JsonProperty String description, @JsonProperty LocalDate releaseDate,
-            @JsonProperty int duration, @JsonProperty MPARating mpaRating, @JsonProperty List<Integer> genres) {
+            @JsonProperty int duration, @JsonProperty MPARating mpaRating, @JsonProperty List<Genre> genres) {
         this.name = name;
         this.description = description;
         this.releaseDate = releaseDate;
