@@ -35,7 +35,7 @@ public class FilmDbStorage implements FilmStorage {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("films")
                 .usingGeneratedKeyColumns("film_id");
-        film.setId(simpleJdbcInsert.executeAndReturnKey(this.FilmToMap(film)).longValue());
+        film.setId(simpleJdbcInsert.executeAndReturnKey(this.filmToMap(film)).longValue());
         updateGenres(film);
         return film;
     }
@@ -59,13 +59,9 @@ public class FilmDbStorage implements FilmStorage {
         String sqlQuery = "update films set " +
                 "name = ?, description = ?, release_date = ?, duration = ?, mpa_rate_id = ? " +
                 "where film_id = ?";
-        jdbcTemplate.update(sqlQuery
-                , film.getName()
-                , film.getDescription()
-                , film.getReleaseDate()
-                , film.getDuration()
-                , film.getMpaRating().getId()
-                , film.getId());
+        jdbcTemplate.update(sqlQuery, film.getName(), film.getDescription(),
+                film.getReleaseDate(), film.getDuration(), film.getMpaRating().getId(),
+                film.getId());
         updateGenres(film);
         return getFilmById(film.getId());
     }
@@ -101,7 +97,7 @@ public class FilmDbStorage implements FilmStorage {
         jdbcTemplate.update(sqlQuery, idFilm, idUser);
     }
 
-    private Map<String, Object> FilmToMap(Film film) {
+    private Map<String, Object> filmToMap(Film film) {
         Map<String, Object> values = new HashMap<>();
         values.put("name", film.getName());
         values.put("description", film.getDescription());
