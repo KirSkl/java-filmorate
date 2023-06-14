@@ -13,13 +13,13 @@ import java.util.Set;
 
 @Data
 public class Film {
-    private Long id;
     @NotBlank
     private final String name;
     @Size(max = 200, message = "максимальная длина описания — 200 символов")
     private final String description;
     private final LocalDate releaseDate;
     private final int duration;
+    private Long id;
     private Set<Long> likes;
     //private int rate = 0;
     @JsonFormat(shape = JsonFormat.Shape.OBJECT)
@@ -28,8 +28,8 @@ public class Film {
     private Set<Genre> genres;
 
 
-    public Film(Long id, String name,  String description,
-            LocalDate releaseDate,  int duration, MPARating mpaRating, Set<Genre> genres) {
+    public Film(Long id, String name, String description,
+            LocalDate releaseDate, int duration, MPARating mpaRating, Set<Genre> genres) {
         this.id = id;
         this.name = name;
         this.description = description;

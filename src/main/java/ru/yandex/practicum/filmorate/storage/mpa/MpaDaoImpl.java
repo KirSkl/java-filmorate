@@ -6,7 +6,6 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.MpaNotFoundException;
 import ru.yandex.practicum.filmorate.model.MPARating;
-import ru.yandex.practicum.filmorate.storage.mpa.MpaDao;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,6 +15,7 @@ import java.util.Collection;
 public class MpaDaoImpl implements MpaDao {
 
     private final JdbcTemplate jdbcTemplate;
+
     @Override
     public Collection<MPARating> getAllRatings() {
         Collection<MPARating> ratings = new ArrayList<>();

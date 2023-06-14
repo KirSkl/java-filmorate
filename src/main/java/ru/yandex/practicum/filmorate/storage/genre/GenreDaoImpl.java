@@ -6,7 +6,6 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.GenreNotFoundException;
 import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.storage.genre.GenreDao;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,11 +15,12 @@ import java.util.Collection;
 public class GenreDaoImpl implements GenreDao {
 
     JdbcTemplate jdbcTemplate;
+
     @Override
     public Collection<Genre> getAllGenres() {
         Collection<Genre> genres = new ArrayList<>();
         SqlRowSet genreRow = jdbcTemplate.queryForRowSet("select * from genres");
-        while(genreRow.next()) {
+        while (genreRow.next()) {
             genres.add(getGenre(genreRow));
         }
         return genres;
@@ -34,7 +34,7 @@ public class GenreDaoImpl implements GenreDao {
         }
         SqlRowSet genreRow = jdbcTemplate.queryForRowSet("SELECT * FROM genres WHERE genre_id = ?", id);
         Genre genre = null;
-        if(genreRow.next()) {
+        if (genreRow.next()) {
             genre = getGenre(genreRow);
         }
         return genre;

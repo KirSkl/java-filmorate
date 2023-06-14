@@ -81,7 +81,7 @@ public class FilmDbStorage implements FilmStorage {
                 + "LEFT JOIN MPA_RATING mr ON f.MPA_RATE_ID = mr.MPA_RATE_ID "
                 + "WHERE film_id = ?", id);
         Film film = null;
-        if(filmRows.next()) {
+        if (filmRows.next()) {
             film = getFilm(filmRows);
         }
         return film;
@@ -120,14 +120,14 @@ public class FilmDbStorage implements FilmStorage {
         SqlRowSet mpaRows = jdbcTemplate.queryForRowSet(
                 "select name from mpa_rating where mpa_rate_id = ?",
                 film.getMpaRating().getId());
-        if(mpaRows.next()) {
+        if (mpaRows.next()) {
             film.getMpaRating().setName(mpaRows.getString("name"));
         }
         Set<Genre> genres = new HashSet<>();
         SqlRowSet genresRow = jdbcTemplate.queryForRowSet(
-                "select * from filmes_genres fg left join genres g on fg.genre_id = g.genre_id where film_id = ?",
+                "select * from films_genres fg left join genres g on fg.genre_id = g.genre_id where film_id = ?",
                 film.getId());
-        while(genresRow.next()) {
+        while (genresRow.next()) {
             genres.add(new Genre(genresRow.getInt("genre_id"),
                     genresRow.getString("name")));
         }
@@ -151,7 +151,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     private void clearGenres(Film film) {
-        jdbcTemplate.update("DELETE FROM filmes_genres where FILM_ID = ?", film.getId());
+        jdbcTemplate.update("DELETE FROM films_genres where FILM_ID = ?", film.getId());
     }
 
     private void updateGenres(Film film) {
@@ -161,7 +161,7 @@ public class FilmDbStorage implements FilmStorage {
         }
         for (Genre genre : film.getGenres()) {
             SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-                    .withTableName("filmes_genres");
+                    .withTableName("films_genres");
             simpleJdbcInsert.execute(this.genresToMap(film.getId(), genre));
         }
     }

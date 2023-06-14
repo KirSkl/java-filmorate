@@ -15,11 +15,12 @@ import java.util.*;
 public class UserDbStorage implements UserStorage {
 
     private final JdbcTemplate jdbcTemplate;
+
     @Override
     public Collection<User> findAllUsers() {
         Collection<User> users = new ArrayList<>();
         SqlRowSet userRows = jdbcTemplate.queryForRowSet("select * from users");
-        while(userRows.next()) {
+        while (userRows.next()) {
             User user = getUser(userRows);
             users.add(user);
         }
@@ -72,7 +73,7 @@ public class UserDbStorage implements UserStorage {
         SqlRowSet userRows = jdbcTemplate.queryForRowSet(
                 "select * from users where user_id = ?", id);
         User user = null;
-        if(userRows.next()) {
+        if (userRows.next()) {
             user = getUser(userRows);
         }
         return user;
@@ -81,11 +82,11 @@ public class UserDbStorage implements UserStorage {
     @Override
     public List<User> getListFriends(Long id) {
         List<User> friends = new ArrayList<>();
-        for (Long friendId : getIdsFriends(id)){
+        for (Long friendId : getIdsFriends(id)) {
             SqlRowSet friendRows = jdbcTemplate.queryForRowSet(
                     "select * from users where user_id = ?", friendId);
             if (friendRows.next()) {
-            friends.add(getUser(friendRows));
+                friends.add(getUser(friendRows));
             }
         }
         return friends;
@@ -108,9 +109,9 @@ public class UserDbStorage implements UserStorage {
         List<User> commonFriends = new ArrayList<>();
         SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet(
                 "SELECT DISTINCT * FROM users WHERE user_id IN "
-                + "(SELECT acceptor_id FROM friends WHERE offeror_id = ? )"
-                + "AND user_id in"
-                + "(SELECT acceptor_id FROM friends WHERE offeror_id = ?) ",
+                        + "(SELECT acceptor_id FROM friends WHERE offeror_id = ? )"
+                        + "AND user_id in"
+                        + "(SELECT acceptor_id FROM friends WHERE offeror_id = ?) ",
                 idFirstFriend, idSecondFriend);
         while (sqlRowSet.next()) {
             commonFriends.add(getUser(sqlRowSet));
@@ -122,14 +123,14 @@ public class UserDbStorage implements UserStorage {
         SqlRowSet friendsRows = jdbcTemplate.queryForRowSet(
                 "select * from friends where offeror_id = ?", id);
         Set<Long> friends = new HashSet<>();
-        while(friendsRows.next()) {
+        while (friendsRows.next()) {
             friends.add(friendsRows.getLong("acceptor_id"));
         }
         return friends;
     }
 
     private User getUser(SqlRowSet userRows) {
-        User user = new User (
+        User user = new User(
                 userRows.getLong("user_id"),
                 userRows.getString("email"),
                 userRows.getString("login"),

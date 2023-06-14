@@ -7,9 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.MPARating;
-import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.MpaService;
 import ru.yandex.practicum.filmorate.util.Validator;
 
@@ -19,8 +17,8 @@ import java.util.Collection;
 @RequestMapping("/mpa")
 public class MpaController {
 
-    private MpaService mpaService;
     private static final Logger log = LoggerFactory.getLogger(MpaController.class);
+    private final MpaService mpaService;
 
     @Autowired
     public MpaController(MpaService mpaService) {

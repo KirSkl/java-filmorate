@@ -2,7 +2,10 @@ package ru.yandex.practicum.filmorate.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -28,7 +31,8 @@ public class User {
     private Set<Long> friends;
 
     @JsonCreator
-    public User(@JsonProperty Long id, @JsonProperty String email, @JsonProperty String login, @JsonProperty String name,
+    public User(@JsonProperty Long id, @JsonProperty String email, @JsonProperty String login,
+            @JsonProperty String name,
             @JsonProperty LocalDate birthday) {
         this.id = id;
         this.email = email;
@@ -39,7 +43,7 @@ public class User {
     }
 
     public User(String email, String login, String name,
-             LocalDate birthday) {
+            LocalDate birthday) {
         this.email = email;
         this.login = login;
         this.name = (name == null || name.isBlank()) ? login : name;

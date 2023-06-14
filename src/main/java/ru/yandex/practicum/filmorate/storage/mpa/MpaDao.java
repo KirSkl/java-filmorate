@@ -5,7 +5,7 @@ import ru.yandex.practicum.filmorate.model.MPARating;
 import java.util.Collection;
 
 public interface MpaDao {
-     Collection<MPARating> getAllRatings();
+    Collection<MPARating> getAllRatings();
 
     MPARating getMpaById(int id);
 }

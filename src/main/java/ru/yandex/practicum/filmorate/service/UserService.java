@@ -15,7 +15,7 @@ public class UserService {
     UserStorage userStorage;
 
     @Autowired
-    public UserService(@Qualifier("UserDaoImpl")UserStorage userStorage) {
+    public UserService(@Qualifier("UserDaoImpl") UserStorage userStorage) {
         this.userStorage = userStorage;
     }
 
