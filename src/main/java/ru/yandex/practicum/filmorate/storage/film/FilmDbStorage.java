@@ -115,7 +115,7 @@ public class FilmDbStorage implements FilmStorage {
                 filmRows.getDate("release_date").toLocalDate(),
                 filmRows.getInt("duration"),
                 new MPARating(filmRows.getInt("mpa_rate_id"), filmRows.getString("name")),
-                new ArrayList<Genre>());
+                new HashSet<Genre>());
 
         SqlRowSet mpaRows = jdbcTemplate.queryForRowSet(
                 "select name from mpa_rating where mpa_rate_id = ?",
@@ -123,7 +123,7 @@ public class FilmDbStorage implements FilmStorage {
         if(mpaRows.next()) {
             film.getMpaRating().setName(mpaRows.getString("name"));
         }
-        List<Genre> genres = new ArrayList<>();
+        Set<Genre> genres = new HashSet<>();
         SqlRowSet genresRow = jdbcTemplate.queryForRowSet(
                 "select * from filmes_genres fg left join genres g on fg.genre_id = g.genre_id where film_id = ?",
                 film.getId());
