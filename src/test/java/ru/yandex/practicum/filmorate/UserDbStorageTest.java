@@ -6,16 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.jdbc.Sql;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserDbStorage;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
@@ -24,8 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class UserDbStorageTest {
     private final UserDbStorage userStorage;
-    JdbcTemplate jdbcTemplate;
-
     private final User user1 = new User(
             "first@user.com", "first", "perviy",
             LocalDate.of(1996, 10, 23));
@@ -37,7 +35,7 @@ public class UserDbStorageTest {
             LocalDate.of(1967, 3, 17));
 
     @Test
-    public void shouldCreateAndReturnUserWithCorrectId() {
+    void shouldCreateAndReturnUserWithCorrectId() {
         assertEquals(1L, userStorage.addUser(user1).getId());
         assertEquals(2L, userStorage.addUser(user2).getId());
 
@@ -46,10 +44,10 @@ public class UserDbStorageTest {
 
         assertEquals(user1, userStorage.getUserById(1L));
         assertEquals(user2, userStorage.getUserById(2L));
-        }
+    }
 
     @Test
-    public void shouldReturnCorrectUserById() {
+    void shouldReturnCorrectUserById() {
         userStorage.addUser(user1);
         user1.setFriends(new HashSet<Long>());
 
@@ -57,7 +55,7 @@ public class UserDbStorageTest {
     }
 
     @Test
-    public void shouldReturnCollectionOfUsers() {
+    void shouldReturnCollectionOfUsers() {
         userStorage.addUser(user1);
         userStorage.addUser(user2);
 
@@ -71,7 +69,7 @@ public class UserDbStorageTest {
     }
 
     @Test
-    public void shouldReturnUpdatedUser() {
+    void shouldReturnUpdatedUser() {
         userStorage.addUser(user1);
         user2.setId(1L);
         userStorage.updateUser(user2);
@@ -81,7 +79,7 @@ public class UserDbStorageTest {
     }
 
     @Test
-    public void shouldRemoveUser() {
+    void shouldRemoveUser() {
         userStorage.addUser(user1);
         userStorage.addUser(user2);
         userStorage.removeUser(1L);
@@ -93,7 +91,7 @@ public class UserDbStorageTest {
     }
 
     @Test
-    public void shouldAddToFriend() {
+    void shouldAddToFriend() {
         userStorage.addUser(user1);
         userStorage.addUser(user2);
 
@@ -106,7 +104,7 @@ public class UserDbStorageTest {
     }
 
     @Test
-    public void shouldReturnListOfFriends() {
+    void shouldReturnListOfFriends() {
         userStorage.addUser(user1);
         userStorage.addUser(user2);
 
@@ -119,7 +117,7 @@ public class UserDbStorageTest {
     }
 
     @Test
-    public void shouldDeleteFromFriends() {
+    void shouldDeleteFromFriends() {
         userStorage.addUser(user1);
         userStorage.addUser(user2);
         userStorage.addUser(user3);
@@ -137,7 +135,7 @@ public class UserDbStorageTest {
     }
 
     @Test
-    public void shouldReturnCommonFriend() {
+    void shouldReturnCommonFriend() {
         userStorage.addUser(user1);
         userStorage.addUser(user2);
         userStorage.addUser(user3);
@@ -151,6 +149,6 @@ public class UserDbStorageTest {
 
         assertEquals(friends, userStorage.getCommonFriends(user2.getId(), user3.getId()));
     }
-    }
+}
 
 

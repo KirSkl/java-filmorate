@@ -91,7 +91,17 @@ public class FilmDbStorage implements FilmStorage {
         new SimpleJdbcInsert(jdbcTemplate).withTableName("likes").execute(this.likeToMap(filmId, userId));
     }
 
-    public Map<String, Object> FilmToMap(Film film) {
+    @Override
+    public void deleteLike(Long idFilm, Long idUser) {
+        final String sqlIsExists = "SELECT COUNT(*) From LIKES WHERE FILM_ID = ? AND USER_ID = ? ";
+        if (jdbcTemplate.queryForObject(sqlIsExists, Integer.class, idFilm, idUser) == 0) {
+            throw new FilmNotFoundException("Фильму с таким ID этот пользователь лайков не ставил");
+        }
+        String sqlQuery = "delete from likes where film_id = ? and user_id = ?";
+        jdbcTemplate.update(sqlQuery, idFilm, idUser);
+    }
+
+    private Map<String, Object> FilmToMap(Film film) {
         Map<String, Object> values = new HashMap<>();
         values.put("name", film.getName());
         values.put("description", film.getDescription());
@@ -101,7 +111,7 @@ public class FilmDbStorage implements FilmStorage {
         return values;
     }
 
-    public Map<String, Object> likeToMap(Long filmId, Long userId) {
+    private Map<String, Object> likeToMap(Long filmId, Long userId) {
         Map<String, Object> values = new HashMap<>();
         values.put("film_id", filmId);
         values.put("user_id", userId);
