@@ -141,7 +141,7 @@ public class UserDbStorage implements UserStorage {
         return user;
     }
 
-    public Map<String, Object> UserToMap(User user) {
+    private Map<String, Object> UserToMap(User user) {
         Map<String, Object> values = new HashMap<>();
         values.put("name", user.getName());
         values.put("email", user.getEmail());
@@ -150,7 +150,7 @@ public class UserDbStorage implements UserStorage {
         return values;
     }
 
-    public Map<String, Object> friendsToMap(Long idOfferor, Long idAcceptor) {
+    private Map<String, Object> friendsToMap(Long idOfferor, Long idAcceptor) {
         Map<String, Object> values = new HashMap<>();
         values.put("offeror_id", idOfferor);
         values.put("acceptor_id", idAcceptor);
