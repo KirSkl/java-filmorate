@@ -4,6 +4,7 @@ drop table IF EXISTS films_genres cascade ;
 drop table IF EXISTS users cascade ;
 drop table IF EXISTS friends cascade ;
 drop table IF EXISTS films cascade ;
+drop table IF EXISTS genres cascade;
 drop table if exists mpa_rating cascade;
 
 create TABLE IF NOT EXISTS mpa_rating
