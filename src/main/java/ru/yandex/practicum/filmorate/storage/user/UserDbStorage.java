@@ -32,7 +32,7 @@ public class UserDbStorage implements UserStorage {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("users")
                 .usingGeneratedKeyColumns("user_id");
-        user.setId(simpleJdbcInsert.executeAndReturnKey(this.UserToMap(user)).longValue());
+        user.setId(simpleJdbcInsert.executeAndReturnKey(this.userToMap(user)).longValue());
         return user;
     }
 
@@ -45,12 +45,8 @@ public class UserDbStorage implements UserStorage {
         String sqlQuery = "update users set " +
                 "name = ?, email = ?, login = ?, birthday = ? " +
                 "where user_id = ?";
-        jdbcTemplate.update(sqlQuery
-                , user.getName()
-                , user.getEmail()
-                , user.getLogin()
-                , user.getBirthday()
-                , user.getId());
+        jdbcTemplate.update(sqlQuery, user.getName(), user.getEmail(),
+                user.getLogin(), user.getBirthday(), user.getId());
         return user;
     }
 
@@ -94,8 +90,8 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public void addToFriends(Long idOfferor, long idAcceptor) {
-        new SimpleJdbcInsert(jdbcTemplate).withTableName("friends").
-                execute(this.friendsToMap(idOfferor, idAcceptor));
+        new SimpleJdbcInsert(jdbcTemplate).withTableName("friends")
+                .execute(this.friendsToMap(idOfferor, idAcceptor));
     }
 
     @Override
@@ -141,7 +137,7 @@ public class UserDbStorage implements UserStorage {
         return user;
     }
 
-    private Map<String, Object> UserToMap(User user) {
+    private Map<String, Object> userToMap(User user) {
         Map<String, Object> values = new HashMap<>();
         values.put("name", user.getName());
         values.put("email", user.getEmail());
