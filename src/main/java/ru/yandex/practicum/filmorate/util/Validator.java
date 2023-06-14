@@ -46,7 +46,7 @@ public class Validator {
     }
 
     public static void validateIDs(Long id, Long secondId) {
-        if(id == secondId) {
+        if (id == secondId) {
             log.info("Ошибочный запрос - ID совпадают");
             throw new ValidationIDException("ID совпадают");
         }
