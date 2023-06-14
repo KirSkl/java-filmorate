@@ -53,11 +53,9 @@ public class Film {
 
     public void addLike(Long id) {
         likes.add(id);
-        //rate++;
     }
 
     public void deleteLike(Long id) {
         likes.remove(id);
-        //rate--;
     }
 }
