@@ -21,7 +21,6 @@ public class Film {
     private final int duration;
     private Long id;
     private Set<Long> likes;
-    //private int rate = 0;
     @JsonFormat(shape = JsonFormat.Shape.OBJECT)
     @JsonProperty("mpa")
     private MPARating mpaRating;
