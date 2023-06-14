@@ -9,7 +9,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Data
@@ -26,11 +25,11 @@ public class Film {
     @JsonFormat(shape = JsonFormat.Shape.OBJECT)
     @JsonProperty("mpa")
     private MPARating mpaRating;
-    private List<Genre> genres;
+    private Set<Genre> genres;
 
 
     public Film(Long id, String name,  String description,
-            LocalDate releaseDate,  int duration, MPARating mpaRating, List<Genre> genres) {
+            LocalDate releaseDate,  int duration, MPARating mpaRating, Set<Genre> genres) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -43,7 +42,7 @@ public class Film {
 
     @JsonCreator
     public Film(@JsonProperty String name, @JsonProperty String description, @JsonProperty LocalDate releaseDate,
-            @JsonProperty int duration, @JsonProperty MPARating mpaRating, @JsonProperty List<Genre> genres) {
+            @JsonProperty int duration, @JsonProperty MPARating mpaRating, @JsonProperty Set<Genre> genres) {
         this.name = name;
         this.description = description;
         this.releaseDate = releaseDate;
