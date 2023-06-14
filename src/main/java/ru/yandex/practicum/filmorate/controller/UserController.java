@@ -50,6 +50,7 @@ public class UserController {
                 "Получен запрос POST /users/{id}/friends/common/{otherId} - получить список общих друзей пользователей");
         Validator.validateID(id);
         Validator.validateID(otherId);
+        Validator.validateIDs(id, otherId);
         return userService.showCommonFriends(id, otherId);
     }
 
@@ -76,6 +77,7 @@ public class UserController {
         log.info("Получен запрос PUT /users{id}/friends/{friendId} - добавить пользователя в друзья");
         Validator.validateID(id);
         Validator.validateID(friendId);
+        Validator.validateIDs(id, friendId);
         userService.addToFriends(id, friendId);
         log.info("Пользователю отправлена заявка на добавление в друзья");
     }
@@ -93,6 +95,7 @@ public class UserController {
         log.info("Получен запрос DELETE /users/{id}/friends/{friendId} - удаление пользователя из друзей");
         Validator.validateID(id);
         Validator.validateID(friendId);
+        Validator.validateIDs(id, friendId);
         userService.removeFromFriends(id, friendId);
         log.info("Пользователь удален из друзей");
     }
