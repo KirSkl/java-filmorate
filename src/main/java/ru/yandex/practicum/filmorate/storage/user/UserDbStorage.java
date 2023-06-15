@@ -13,14 +13,12 @@ import java.util.*;
 public class UserDbStorage implements UserStorage {
 
     private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert simpleJdbcInsert; //для добавления в таблицу users
-    private final SimpleJdbcInsert simpleJdbcInsertFriend; //второй объект для добавления данных в таблицу friends
+    private final SimpleJdbcInsert simpleJdbcInsert;
 
     public UserDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("users")
                 .usingGeneratedKeyColumns("user_id");
-        simpleJdbcInsertFriend = new SimpleJdbcInsert(jdbcTemplate).withTableName("friends");
     }
 
     @Override
@@ -86,7 +84,8 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public void addToFriends(Long idOfferor, long idAcceptor) {
-        simpleJdbcInsertFriend.execute(this.friendsToMap(idOfferor, idAcceptor));
+        String sqlString = "INSERT INTO friends (offeror_id, acceptor_id) VALUES (?, ?)";
+        jdbcTemplate.update(sqlString, idOfferor, idAcceptor);
     }
 
     @Override
@@ -140,13 +139,6 @@ public class UserDbStorage implements UserStorage {
         values.put("email", user.getEmail());
         values.put("login", user.getLogin());
         values.put("birthday", user.getBirthday());
-        return values;
-    }
-
-    private Map<String, Object> friendsToMap(Long idOfferor, Long idAcceptor) {
-        Map<String, Object> values = new HashMap<>();
-        values.put("offeror_id", idOfferor);
-        values.put("acceptor_id", idAcceptor);
         return values;
     }
 }
