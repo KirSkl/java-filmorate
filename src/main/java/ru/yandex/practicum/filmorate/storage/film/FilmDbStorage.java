@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
-import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -19,10 +18,11 @@ public class FilmDbStorage implements FilmStorage {
     private final SimpleJdbcInsert simpleJdbcInsert;
     private final SimpleJdbcInsert simpleJdbcInsertLike;
     private final SimpleJdbcInsert simpleJdbcInsertFilmGenre;
+
     public FilmDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("films")
-                .usingGeneratedKeyColumns("film_id");;
+                .usingGeneratedKeyColumns("film_id");
         this.simpleJdbcInsertLike = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("likes");
         this.simpleJdbcInsertFilmGenre = new SimpleJdbcInsert(jdbcTemplate)
@@ -51,7 +51,7 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public void removeFilm(Long id) {
         String sqlQuery = "delete from films where film_id = ?";
-        if (jdbcTemplate.update(sqlQuery, id) !=1) {
+        if (jdbcTemplate.update(sqlQuery, id) != 1) {
             throw new FilmNotFoundException("Фильм с таким ID не найден");
         }
     }
