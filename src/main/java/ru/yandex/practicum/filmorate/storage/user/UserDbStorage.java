@@ -73,14 +73,14 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public List<User> getListFriends(Long id) {
+        SqlRowSet friendRows = jdbcTemplate.queryForRowSet(
+                "select u.* from users u "
+                        + "inner join friends f on u.user_id = f.acceptor_id "
+                        + "where offeror_id = ?", id);
         List<User> friends = new ArrayList<>();
-        for (Long friendId : getIdsFriends(id)) {
-            SqlRowSet friendRows = jdbcTemplate.queryForRowSet(
-                    "select * from users where user_id = ?", friendId);
-            if (friendRows.next()) {
+            while (friendRows.next()) {
                 friends.add(getUser(friendRows));
             }
-        }
         return friends;
     }
 
