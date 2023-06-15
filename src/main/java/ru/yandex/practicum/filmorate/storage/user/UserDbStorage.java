@@ -42,40 +42,32 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User updateUser(User user) {
-        final String sqlIsExists = "select count(*) From users WHERE user_id = ?";
-        if (jdbcTemplate.queryForObject(sqlIsExists, Integer.class, user.getId()) == 0) {
-            throw new UserNotFoundException("Пользователь с таким ID не найден");
-        }
         String sqlQuery = "update users set " +
                 "name = ?, email = ?, login = ?, birthday = ? " +
                 "where user_id = ?";
-        jdbcTemplate.update(sqlQuery, user.getName(), user.getEmail(),
-                user.getLogin(), user.getBirthday(), user.getId());
+        if (jdbcTemplate.update(sqlQuery, user.getName(), user.getEmail(),
+                user.getLogin(), user.getBirthday(), user.getId()) != 1) {
+            throw new UserNotFoundException("Пользователь с таким ID не найден");
+        }
         return user;
     }
 
     @Override
     public void removeUser(Long id) {
-        final String sqlIsExists = "select count(*) From users WHERE user_id = ?";
-        if (jdbcTemplate.queryForObject(sqlIsExists, Integer.class, id) == 0) {
+        String sqlQuery = "delete from users where user_id = ?";
+        if (jdbcTemplate.update(sqlQuery, id) != 1) {
             throw new UserNotFoundException("Пользователь с таким ID не найден");
         }
-        String sqlQuery = "delete from users where user_id = ?";
-        jdbcTemplate.update(sqlQuery, id);
     }
 
     @Override
     public User getUserById(Long id) {
-        final String sqlIsExists = "select count(*) From users WHERE user_id = ?";
-        if (jdbcTemplate.queryForObject(sqlIsExists, Integer.class, id) == 0) {
-            throw new UserNotFoundException("Пользователь с таким ID не найден");
-        }
         SqlRowSet userRows = jdbcTemplate.queryForRowSet(
                 "select * from users where user_id = ?", id);
-        User user = null;
-        if (userRows.next()) {
-            user = getUser(userRows);
+        if (!userRows.next()) {
+            throw new UserNotFoundException("Пользователь с таким ID не найден");
         }
+        User user = getUser(userRows);
         return user;
     }
 
@@ -100,7 +92,9 @@ public class UserDbStorage implements UserStorage {
     @Override
     public void removeFromFriends(Long id1, Long id2) {
         String sqlQuery = "delete from friends where offeror_id = ? and acceptor_id = ?";
-        jdbcTemplate.update(sqlQuery, id1, id2);
+        if (jdbcTemplate.update(sqlQuery, id1, id2) != 1) {
+            throw new UserNotFoundException("Друг с таким ID не найден");
+        }
     }
 
     @Override
