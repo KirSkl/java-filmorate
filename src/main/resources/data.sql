@@ -1,12 +1,12 @@
-insert into MPA_RATING values ( 1, 'G');
-insert into MPA_RATING values ( 2, 'PG');
-insert into MPA_RATING values ( 3, 'PG-13');
-insert into MPA_RATING values ( 4, 'R');
-insert into MPA_RATING values ( 5, 'NC-17');
+MERGE into MPA_RATING values (1, 'G');
+MERGE into MPA_RATING values (2, 'PG');
+MERGE into MPA_RATING values (3, 'PG-13');
+MERGE into MPA_RATING values (4, 'R');
+MERGE into MPA_RATING values (5, 'NC-17');
 
-insert into PUBLIC.GENRES (NAME) VALUES ('Комедия');
-insert into PUBLIC.GENRES (NAME) VALUES ('Драма');
-insert into PUBLIC.GENRES (NAME) VALUES ('Мультфильм');
-insert into PUBLIC.GENRES (NAME) VALUES ('Триллер');
-insert into PUBLIC.GENRES (NAME) VALUES ('Документальный');
-insert into PUBLIC.GENRES (NAME) VALUES ('Боевик');
+MERGE into PUBLIC.GENRES (GENRE_ID, NAME) VALUES (1, 'Комедия');
+MERGE into PUBLIC.GENRES (GENRE_ID, NAME) VALUES (2, 'Драма');
+MERGE into PUBLIC.GENRES (GENRE_ID, NAME) VALUES (3, 'Мультфильм');
+MERGE into PUBLIC.GENRES (GENRE_ID, NAME) VALUES (4, 'Триллер');
+MERGE into PUBLIC.GENRES (GENRE_ID, NAME) VALUES (5, 'Документальный');
+MERGE into PUBLIC.GENRES (GENRE_ID, NAME) VALUES (6, 'Боевик');
