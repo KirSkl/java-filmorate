@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
-import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -11,10 +10,18 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.util.*;
 
 @Component("UserDaoImpl")
-@AllArgsConstructor
 public class UserDbStorage implements UserStorage {
 
     private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert simpleJdbcInsert; //для добавления в таблицу users
+    private final SimpleJdbcInsert simpleJdbcInsertFriend; //второй объект для добавления данных в таблицу friends
+
+    public UserDbStorage(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+        simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("users")
+                .usingGeneratedKeyColumns("user_id");
+        simpleJdbcInsertFriend = new SimpleJdbcInsert(jdbcTemplate).withTableName("friends");
+    }
 
     @Override
     public Collection<User> findAllUsers() {
@@ -29,9 +36,6 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User addUser(User user) {
-        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("users")
-                .usingGeneratedKeyColumns("user_id");
         user.setId(simpleJdbcInsert.executeAndReturnKey(this.userToMap(user)).longValue());
         return user;
     }
@@ -90,8 +94,7 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public void addToFriends(Long idOfferor, long idAcceptor) {
-        new SimpleJdbcInsert(jdbcTemplate).withTableName("friends")
-                .execute(this.friendsToMap(idOfferor, idAcceptor));
+        simpleJdbcInsertFriend.execute(this.friendsToMap(idOfferor, idAcceptor));
     }
 
     @Override
