@@ -1,10 +1,10 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -13,10 +13,11 @@ import java.util.stream.Collectors;
 
 @Service
 public class FilmService {
+
     private final FilmStorage filmStorage;
 
     @Autowired
-    public FilmService(FilmStorage filmStorage) {
+    public FilmService(@Qualifier("FilmDaoImpl") FilmStorage filmStorage) {
         this.filmStorage = filmStorage;
     }
 
@@ -41,16 +42,16 @@ public class FilmService {
     }
 
     public void addLike(Long idFilm, Long idUser) {
-        filmStorage.getFilmById(idFilm).addLike(idUser);
+        filmStorage.addLike(idFilm, idUser);
     }
 
     public void deleteLike(Long idFilm, Long idUser) {
-        filmStorage.getFilmById(idFilm).deleteLike(idUser);
+        filmStorage.deleteLike(idFilm, idUser);
     }
 
     public List<Film> getMostPopularFilms(int count) {
         return filmStorage.findAllFilms().stream()
-                .sorted(Comparator.comparingInt(film -> -film.getRate())).limit(count)
+                .sorted(Comparator.comparingInt(film -> -film.getLikes().size())).limit(count)
                 .collect(Collectors.toList());
     }
 }

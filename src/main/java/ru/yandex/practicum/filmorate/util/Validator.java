@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.exception.ValidationIDException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -36,6 +35,20 @@ public class Validator {
         if (id < 1) {
             log.info("Ошибочный запрос - такой ID не может существовать");
             throw new ValidationIDException("ID меньше 1");
+        }
+    }
+
+    public static void validateID(int id) {
+        if (id < 1) {
+            log.info("Ошибочный запрос - такой ID не может существовать");
+            throw new ValidationIDException("ID меньше 1");
+        }
+    }
+
+    public static void validateIDs(Long id, Long secondId) {
+        if (id == secondId) {
+            log.info("Ошибочный запрос - ID совпадают");
+            throw new ValidationIDException("ID совпадают");
         }
     }
 }

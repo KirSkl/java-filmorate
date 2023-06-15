@@ -1,22 +1,21 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
+
     UserStorage userStorage;
 
     @Autowired
-    public UserService(InMemoryUserStorage userStorage) {
+    public UserService(@Qualifier("UserDaoImpl") UserStorage userStorage) {
         this.userStorage = userStorage;
     }
 
@@ -41,25 +40,18 @@ public class UserService {
     }
 
     public void addToFriends(Long idFirstFriend, Long idSecondFriend) {
-        userStorage.getUserById(idFirstFriend).getFriends().add(idSecondFriend);
-        userStorage.getUserById(idSecondFriend).getFriends().add(idFirstFriend);
+        userStorage.addToFriends(idFirstFriend, idSecondFriend);
     }
 
     public void removeFromFriends(Long idFirstFriend, Long idSecondFriend) {
-        userStorage.getUserById(idFirstFriend).getFriends().remove(idSecondFriend);
-        userStorage.getUserById(idSecondFriend).getFriends().remove(idSecondFriend);
+        userStorage.removeFromFriends(idFirstFriend, idSecondFriend);
     }
 
     public List<User> getFriendsOfUser(Long id) {
-        Set<Long> friendsIds =  userStorage.getUserById(id).getFriends();
-        return userStorage.findAllUsers().stream().filter(user -> friendsIds.contains(user.getId()))
-                .collect(Collectors.toList());
+        return userStorage.getListFriends(id);
     }
 
     public List<User> showCommonFriends(Long idFirstFriend, Long idSecondFriend) {
-        return userStorage.findAllUsers().stream()
-                .filter(user -> user.getFriends().contains(idFirstFriend)
-                        && user.getFriends().contains(idSecondFriend))
-                .collect(Collectors.toList());
+        return userStorage.getCommonFriends(idFirstFriend, idSecondFriend);
     }
 }
