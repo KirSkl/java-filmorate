@@ -16,17 +16,11 @@ public class FilmDbStorage implements FilmStorage {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
-    private final SimpleJdbcInsert simpleJdbcInsertLike;
-    private final SimpleJdbcInsert simpleJdbcInsertFilmGenre;
 
     public FilmDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("films")
                 .usingGeneratedKeyColumns("film_id");
-        this.simpleJdbcInsertLike = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("likes");
-        this.simpleJdbcInsertFilmGenre = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("films_genres");
     }
 
     @Override
@@ -79,12 +73,12 @@ public class FilmDbStorage implements FilmStorage {
         if (!filmRows.next()) {
             throw new FilmNotFoundException("Фильм с таким ID не найден");
         }
-        Film film = getFilm(filmRows);
-        return film;
+        return getFilm(filmRows);
     }
 
     public void addLike(Long filmId, Long userId) {
-        simpleJdbcInsertLike.execute(this.likeToMap(filmId, userId));
+        String sqlString = "INSERT INTO likes (film_id, user_id) VALUES (?, ?)";
+        jdbcTemplate.update(sqlString, filmId, userId);
     }
 
     @Override
@@ -102,13 +96,6 @@ public class FilmDbStorage implements FilmStorage {
         values.put("release_date", film.getReleaseDate());
         values.put("duration", film.getDuration());
         values.put("mpa_rate_id", film.getMpaRating().getId());
-        return values;
-    }
-
-    private Map<String, Object> likeToMap(Long filmId, Long userId) {
-        Map<String, Object> values = new HashMap<>();
-        values.put("film_id", filmId);
-        values.put("user_id", userId);
         return values;
     }
 
@@ -147,13 +134,6 @@ public class FilmDbStorage implements FilmStorage {
         return film;
     }
 
-    private Map<String, Object> genresToMap(Long id, Genre genre) {
-        Map<String, Object> values = new HashMap<>();
-        values.put("film_id", id);
-        values.put("genre_id", genre.getId());
-        return values;
-    }
-
     private void clearGenres(Film film) {
         jdbcTemplate.update("DELETE FROM films_genres where FILM_ID = ?",
                 film.getId());
@@ -165,7 +145,8 @@ public class FilmDbStorage implements FilmStorage {
             return;
         }
         for (Genre genre : film.getGenres()) {
-            simpleJdbcInsertFilmGenre.execute(this.genresToMap(film.getId(), genre));
+            String sqlString = "INSERT INTO films_genres (film_id, genre_id) VALUES (?, ?)";
+            jdbcTemplate.update(sqlString, film.getId(), genre.getId());
         }
     }
 }
