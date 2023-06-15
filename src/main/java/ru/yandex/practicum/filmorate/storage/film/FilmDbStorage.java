@@ -13,10 +13,21 @@ import ru.yandex.practicum.filmorate.model.MPARating;
 import java.util.*;
 
 @Component("FilmDaoImpl")
-@AllArgsConstructor
 public class FilmDbStorage implements FilmStorage {
 
     private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert simpleJdbcInsert;
+    private final SimpleJdbcInsert simpleJdbcInsertLike;
+    private final SimpleJdbcInsert simpleJdbcInsertFilmGenre;
+    public FilmDbStorage(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("films")
+                .usingGeneratedKeyColumns("film_id");;
+        this.simpleJdbcInsertLike = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("likes");
+        this.simpleJdbcInsertFilmGenre = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("films_genres");
+    }
 
     @Override
     public Collection<Film> findAllFilms() {
@@ -32,9 +43,6 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film addFilm(Film film) {
-        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("films")
-                .usingGeneratedKeyColumns("film_id");
         film.setId(simpleJdbcInsert.executeAndReturnKey(this.filmToMap(film)).longValue());
         updateGenres(film);
         return film;
@@ -42,59 +50,49 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public void removeFilm(Long id) {
-        final String sqlIsExists = "SELECT COUNT(*) From FILMS WHERE FILM_ID=?";
-        if (jdbcTemplate.queryForObject(sqlIsExists, Integer.class, id) == 0) {
+        String sqlQuery = "delete from films where film_id = ?";
+        if (jdbcTemplate.update(sqlQuery, id) !=1) {
             throw new FilmNotFoundException("Фильм с таким ID не найден");
         }
-        String sqlQuery = "delete from films where film_id = ?";
-        jdbcTemplate.update(sqlQuery, id);
     }
 
     @Override
     public Film updateFilm(Film film) {
-        final String sqlIsExists = "SELECT COUNT(*) From FILMS WHERE FILM_ID=?";
-        if (jdbcTemplate.queryForObject(sqlIsExists, Integer.class, film.getId()) == 0) {
-            throw new FilmNotFoundException("Фильм с таким ID не найден");
-        }
         String sqlQuery = "update films set " +
                 "name = ?, description = ?, release_date = ?, duration = ?, mpa_rate_id = ? " +
                 "where film_id = ?";
-        jdbcTemplate.update(sqlQuery, film.getName(), film.getDescription(),
+        if (jdbcTemplate.update(sqlQuery, film.getName(), film.getDescription(),
                 film.getReleaseDate(), film.getDuration(), film.getMpaRating().getId(),
-                film.getId());
+                film.getId()) != 1) {
+            throw new FilmNotFoundException("Фильм с таким ID не найден");
+        }
         updateGenres(film);
         return getFilmById(film.getId());
     }
 
     @Override
     public Film getFilmById(Long id) {
-        final String sqlIsExists = "SELECT COUNT(*) From FILMS WHERE FILM_ID=?";
-        if (jdbcTemplate.queryForObject(sqlIsExists, Integer.class, id) == 0) {
-            throw new FilmNotFoundException("Фильм с таким ID не найден");
-        }
         SqlRowSet filmRows = jdbcTemplate.queryForRowSet("SELECT film_id, f.name AS title, description, "
                 + "release_date, duration, f.mpa_rate_id, mr.name FROM films f "
                 + "LEFT JOIN MPA_RATING mr ON f.MPA_RATE_ID = mr.MPA_RATE_ID "
                 + "WHERE film_id = ?", id);
-        Film film = null;
-        if (filmRows.next()) {
-            film = getFilm(filmRows);
+        if (!filmRows.next()) {
+            throw new FilmNotFoundException("Фильм с таким ID не найден");
         }
+        Film film = getFilm(filmRows);
         return film;
     }
 
     public void addLike(Long filmId, Long userId) {
-        new SimpleJdbcInsert(jdbcTemplate).withTableName("likes").execute(this.likeToMap(filmId, userId));
+        simpleJdbcInsertLike.execute(this.likeToMap(filmId, userId));
     }
 
     @Override
     public void deleteLike(Long idFilm, Long idUser) {
-        final String sqlIsExists = "SELECT COUNT(*) From LIKES WHERE FILM_ID = ? AND USER_ID = ? ";
-        if (jdbcTemplate.queryForObject(sqlIsExists, Integer.class, idFilm, idUser) == 0) {
+        String sqlQuery = "delete from likes where film_id = ? and user_id = ?";
+        if (jdbcTemplate.update(sqlQuery, idFilm, idUser) != 1) {
             throw new FilmNotFoundException("Фильму с таким ID этот пользователь лайков не ставил");
         }
-        String sqlQuery = "delete from likes where film_id = ? and user_id = ?";
-        jdbcTemplate.update(sqlQuery, idFilm, idUser);
     }
 
     private Map<String, Object> filmToMap(Film film) {
@@ -157,7 +155,11 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     private void clearGenres(Film film) {
-        jdbcTemplate.update("DELETE FROM films_genres where FILM_ID = ?", film.getId());
+        if (jdbcTemplate.update(
+                "DELETE FROM films_genres where FILM_ID = ?",
+                film.getId()) != 1) {
+            throw new FilmNotFoundException("Фильм с таким ID не найден");
+        }
     }
 
     private void updateGenres(Film film) {
@@ -166,9 +168,7 @@ public class FilmDbStorage implements FilmStorage {
             return;
         }
         for (Genre genre : film.getGenres()) {
-            SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-                    .withTableName("films_genres");
-            simpleJdbcInsert.execute(this.genresToMap(film.getId(), genre));
+            simpleJdbcInsertFilmGenre.execute(this.genresToMap(film.getId(), genre));
         }
     }
 }
