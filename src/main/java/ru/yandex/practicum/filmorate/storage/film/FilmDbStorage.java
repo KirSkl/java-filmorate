@@ -155,11 +155,8 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     private void clearGenres(Film film) {
-        if (jdbcTemplate.update(
-                "DELETE FROM films_genres where FILM_ID = ?",
-                film.getId()) != 1) {
-            throw new FilmNotFoundException("Фильм с таким ID не найден");
-        }
+        jdbcTemplate.update("DELETE FROM films_genres where FILM_ID = ?",
+                film.getId());
     }
 
     private void updateGenres(Film film) {
