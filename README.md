@@ -1,5 +1,6 @@
 # java-filmorate
-Template repository for Filmorate project.
+Аналог кинопоиска. REST API приложение с хранением информации о пользователях и фильмах в Базе Данных. (Spring Boot, Maven, JUnit, JDBC, H2-database, SQL)
+
 ![Схема базы данных, использeумая в приложении]([filmorate-sql-scheme.png](https://github.com/KirSkl/java-filmorate/blob/add-sql-diagramm/filmorate-sql-scheme.png))
 
 films
