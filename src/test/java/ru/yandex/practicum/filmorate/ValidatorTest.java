@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate;
 
 import org.junit.jupiter.api.Test;
-
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
@@ -18,7 +17,7 @@ class ValidatorTest {
         Film filmZeroDuration = new Film("Пустышка",
                 "Фильм с нулевой продолжительностью",
                 LocalDate.of(1984, 01, 01),
-                0);
+                0, null, null);
 
         ValidationException thrown = assertThrows(ValidationException.class,
                 () -> Validator.validateFilm(filmZeroDuration));
@@ -30,7 +29,7 @@ class ValidatorTest {
         Film filmNegativeDuration = new Film("Негатив",
                 "Фильм с негативной продолжительностью",
                 LocalDate.of(1984, 01, 01),
-                -100
+                -100, null, null
         );
 
         ValidationException thrown = assertThrows(ValidationException.class,
@@ -43,7 +42,7 @@ class ValidatorTest {
         Film filmTooEarly = new Film("Ранняя пташка",
                 "Фильм, вдохновивший братьев Люмьер",
                 LocalDate.of(1884, 01, 01),
-                100
+                100, null, null
         );
 
         ValidationException thrown = assertThrows(ValidationException.class,
@@ -68,7 +67,7 @@ class ValidatorTest {
         Film filmCorrect = new Film("Нормальный фильм",
                 "Можно скоротать вечерок",
                 LocalDate.of(1984, 01, 01),
-                100);
+                100, null, null);
 
         assertDoesNotThrow(() -> Validator.validateFilm(filmCorrect));
     }
